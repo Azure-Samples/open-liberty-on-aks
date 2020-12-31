@@ -1,3 +1,13 @@
+---
+page_type: sample
+languages:
+- java
+products:
+- azure
+description: "Sample projects for developing and deploying Java applications with Open/WebSphere Liberty on an Azure Kubernetes Service cluster."
+urlFragment: "open-liberty-on-aks"
+---
+
 # Open Liberty/WebSphere Liberty on Azure Kubernetes Service Samples
 
 ## Overview
