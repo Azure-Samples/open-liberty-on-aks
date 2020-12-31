@@ -1,57 +1,17 @@
-# Project Name
+# Open Liberty/WebSphere Liberty on Azure Kubernetes Service Samples
 
-(short, 1-3 sentenced, description of the project)
+## Overview
 
-## Features
+[Azure Kubernetes Service (AKS)](https://azure.microsoft.com/services/kubernetes-service/) deploys and manages containerized applications more easily with a fully managed Kubernetes service. Azure Kubernetes Service (AKS) offers serverless Kubernetes, an integrated continuous integration and continuous delivery (CI/CD) experience, and enterprise-grade security and governance. Unite your development and operations teams on a single platform to rapidly build, deliver, and scale applications with confidence.
 
-This project framework provides the following features:
+[Open Liberty](https://openliberty.io) is an IBM Open Source project that implements the Eclipse MicroProfile specifications and is also Java/Jakarta EE compatible. Open Liberty is fast to start up with a low memory footprint and supports live reloading for quick iterative development. It is simple to add and remove features from the latest versions of MicroProfile and Java/Jakarta EE. Zero migration lets you focus on what's important, not the APIs changing under you.
 
-* Feature 1
-* Feature 2
-* ...
+[WebSphere Liberty](https://www.ibm.com/cloud/websphere-liberty) architecture shares the same code base as the open sourced Open Liberty server runtime, which provides additional benefits such as low-cost experimentation, customization and seamless migration from open source to production.
 
-## Getting Started
+This repository contains samples projects for deploying Java applications with Open Liberty/WebSphere Liberty on an Azure Kubernetes Service cluster.
+These sample projects show how to use various features in Open Liberty/WebSphere Liberty and how to integrate with different Azure services.
+Below table shows the list of samples available in this repository.
 
-### Prerequisites
-
-(ideally very short, if any)
-
-- OS
-- Library version
-- ...
-
-### Installation
-
-(ideally very short)
-
-- npm install [package name]
-- mvn install
-- ...
-
-### Quickstart
-(Add steps to get up and running quickly)
-
-1. git clone [repository clone url]
-2. cd [respository name]
-3. ...
-
-
-## Demo
-
-A demo app is included to show how to use the project.
-
-To run the demo, follow these steps:
-
-(Add steps to start up the demo)
-
-1.
-2.
-3.
-
-## Resources
-
-(Any additional resources or related projects)
-
-- Link to supporting information
-- Link to similar sample
-- ...
+| Sample                           | Description                                | Guide                            |
+|----------------------------------|--------------------------------------------|----------------------------------|
+| [`javaee-app-simple-cluster`](javaee-app-simple-cluster) | Deploy a simple cluster of Java EE application with Open Liberty/WebSphere Liberty on an AKS cluster. | TODO |
