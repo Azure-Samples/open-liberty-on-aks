@@ -7,7 +7,9 @@ spec:
   replicas: ${REPLICAS}
   # Note: replace "${Container_Registry_URL}" with your container registry URL
   applicationImage: ${Container_Registry_URL}/javaee-cafe-simple:1.0.0
+  pullPolicy: Always
   pullSecret: acr-secret
   service:
     type: LoadBalancer
-    port: 9080
+    targetPort: 9080
+    port: 80

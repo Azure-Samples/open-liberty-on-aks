@@ -14,8 +14,10 @@
 		crossorigin="anonymous" />
 </h:head>
 <h:body>
-    <div>
-        <h:outputText value="#{cafe.hostName}" />
+    <div class="container text-muted">
+		<h:outputFormat value="#{messages.podName}" rendered="#{cafe.hostName != null}">
+			<f:param value="#{cafe.hostName}" />
+		</h:outputFormat>
     </div>
 	<h:form>
 		<div class="container">
