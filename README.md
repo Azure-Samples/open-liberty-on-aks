@@ -25,3 +25,62 @@ Below table shows the list of samples available in this repository.
 | Sample                           | Description                                | Guide                            |
 |----------------------------------|--------------------------------------------|----------------------------------|
 | [`javaee-app-simple-cluster`](javaee-app-simple-cluster) | Deploy a simple cluster of Java EE application with Open Liberty/WebSphere Liberty on an AKS cluster. | [howto-guide](https://docs.microsoft.com/azure/aks/howto-deploy-java-liberty-app) |
+
+## Demo Notes
+
+Fill this in:
+
+| Azure resource | Link |
+|----------------|------|
+| Subscription | subName |
+| Resource group | rgName |
+| Azure Container Registry | acrName |
+| AKS Cluster | MyAKSCluster |
+| Deployed app URL | appUrl |
+
+### Show the source code
+
+* `tree javaee-app-simple-cluster`
+
+* `cat javaee-app-simple-cluster/pom.xml`
+
+   * Show use of `liberty-maven-plugin`.
+
+* `cat javaee-app-simple-cluster/Dockerfile`
+
+   * Mention this is where CI/CD comes in.
+
+* `cat javaee-app-simple-cluster/src/main/liberty/config/server.xml`
+
+### Connect to the cluster
+
+```bash
+alias k=kubectl
+az aks get-credentials --resource-group rgname --name myAKSCluster --overwrite-existing
+k get nodes
+```
+
+### View application deployment
+
+```bash
+k get openlibertyapplication javaee-app-simple-cluster
+k get deployment javaee-app-simple-cluster
+k get service javaee-app-simple-cluster
+k get pods
+```
+
+### Visit the application
+
+* Visit the cluster in the portal
+
+* Select **Workloads**.
+
+* Show the `java-ee-app-simple-cluster`.
+
+* [Java EE Cafe](appUrl)
+
+* You should see the pod name of your application replicas displayed at the top-left of the page. Wait for a few minutes and refresh the page to see a different pod name displayed due to load balancing provided by the AKS cluster.
+
+
+
+
