@@ -71,7 +71,7 @@ k get pods
 
 ### Visit the application
 
-* Visit the cluster in the portal
+* Visit the cluster in the portal.
 
 * Select **Workloads**.
 
