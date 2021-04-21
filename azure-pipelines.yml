@@ -11,13 +11,22 @@ pool:
 
 steps:
 - task: CredScan@2
-  displayName: Run CredScan
   inputs:
-    toolMajorVersion: V2
+    toolMajorVersion: 'V2'
     verboseOutput: true
-    debugMode: false
-    folderSuppression: false
 - task: PostAnalysis@1
-  displayName: Post Analysis
   inputs:
+    AllTools: false
+    APIScan: false
+    BinSkim: false
+    CodesignValidation: false
     CredScan: true
+    FortifySCA: false
+    FxCop: false
+    ModernCop: false
+    PoliCheck: false
+    RoslynAnalyzers: false
+    SDLNativeRules: false
+    Semmle: false
+    TSLint: false
+    ToolLogsNotFoundAction: 'Standard'
