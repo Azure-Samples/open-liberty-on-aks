@@ -10,7 +10,7 @@ pool:
   vmImage: vs2017-win2016
 
 steps:
-- task: CredScan@2
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-credscan.CredScan
   inputs:
     toolMajorVersion: 'V2'
     verboseOutput: true
