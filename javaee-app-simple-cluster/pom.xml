@@ -6,7 +6,7 @@
 
   <artifactId>javaee-cafe</artifactId>
   <groupId>javaee-cafe</groupId>
-  <version>1.0.24</version>
+  <version>1.0.25</version>
   <packaging>war</packaging>
   <name>${project.artifactId}</name>
   <description>This is the basic Java EE application used in the demo.
@@ -53,61 +53,6 @@
     </resources>        
     <finalName>${project.artifactId}</finalName>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
-        <executions>
-          <execution>
-            <id>00-delete-secret</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>${project.build.directory}</workingDirectory>
-              <executable>kubectl</executable>
-              <commandlineArgs>delete secret docker-registry ${param.pull.secret.name} --ignore-not-found</commandlineArgs>
-            </configuration>
-          </execution>
-          <execution>
-            <id>01-create-secret</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>${project.build.directory}</workingDirectory>
-              <executable>kubectl</executable>
-              <commandlineArgs>create secret docker-registry ${param.pull.secret.name} --docker-server=${param.login.server} --docker-username=${param.user.name} --docker-password=${param.password}</commandlineArgs>
-            </configuration>
-          </execution>
-          <execution>
-            <id>02-acr-build</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>${project.build.directory}</workingDirectory>
-              <executable>az</executable>
-              <commandlineArgs>acr build -t ${project.artifactId}:${project.version} -r ${param.registry.name} .</commandlineArgs>
-            </configuration>
-          </execution>
-          <execution>
-            <id>03-kubectl-apply</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>${project.build.directory}/..</workingDirectory>
-              <executable>kubectl</executable>
-              <commandlineArgs>apply -f ${project.build.directory}/openlibertyapplication.yaml</commandlineArgs>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.2.0</version>
@@ -172,4 +117,71 @@
       </plugin>
     </plugins>
   </build>
+
+
+  <profiles>
+    <profile>
+      <id>aks</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.6.0</version>
+            <executions>
+              <execution>
+                <id>00-delete-secret</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <workingDirectory>${project.build.directory}</workingDirectory>
+                  <executable>kubectl</executable>
+                  <commandlineArgs>delete secret docker-registry ${param.pull.secret.name} --ignore-not-found</commandlineArgs>
+                </configuration>
+              </execution>
+              <execution>
+                <id>01-create-secret</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <workingDirectory>${project.build.directory}</workingDirectory>
+                  <executable>kubectl</executable>
+                  <commandlineArgs>create secret docker-registry ${param.pull.secret.name} --docker-server=${param.login.server} --docker-username=${param.user.name} --docker-password=${param.password}</commandlineArgs>
+                </configuration>
+              </execution>
+              <execution>
+                <id>02-acr-build</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <workingDirectory>${project.build.directory}</workingDirectory>
+                  <executable>az</executable>
+                  <commandlineArgs>acr build -t ${project.artifactId}:${project.version} -r ${param.registry.name} .</commandlineArgs>
+                </configuration>
+              </execution>
+              <execution>
+                <id>03-kubectl-apply</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <workingDirectory>${project.build.directory}/..</workingDirectory>
+                  <executable>kubectl</executable>
+                  <commandlineArgs>apply -f ${project.build.directory}/openlibertyapplication.yaml</commandlineArgs>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  
 </project>
