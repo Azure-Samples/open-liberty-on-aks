@@ -17,7 +17,5 @@
     <applicationManager autoExpand="true" />
 
     <!-- Define web application with its context root and location -->
-    <webApplication id="javaee-cafe" contextRoot="/"
-        location="${server.config.dir}/apps/javaee-cafe.war">
-    </webApplication>
+    <webApplication location="${artifactId}.war" contextRoot="/" />
 </server>
