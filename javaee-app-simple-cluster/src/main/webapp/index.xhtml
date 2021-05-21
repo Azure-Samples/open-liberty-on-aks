@@ -15,9 +15,10 @@
 </h:head>
 <h:body>
     <div class="container text-muted">
-		<h:outputFormat value="#{messages.podName}" rendered="#{cafe.hostName != null}">
+		<p><h:outputFormat value="#{messages.podName}" rendered="#{cafe.hostName != null}">
 			<f:param value="#{cafe.hostName}" />
-		</h:outputFormat>
+		</h:outputFormat></p>
+		<p><h:outputText value="#{messages.versionString}" /></p>
     </div>
 	<h:form>
 		<div class="container">

@@ -1,0 +1,13 @@
+apiVersion: openliberty.io/v1beta1
+kind: OpenLibertyApplication
+metadata:
+  name: ${project.artifactId}-cluster
+spec:
+  replicas: ${param.replicas}
+  applicationImage: ${param.login.server}/${project.artifactId}:${project.version}
+  pullPolicy: Always
+  pullSecret: ${param.pull.secret.name}
+  service:
+    type: LoadBalancer
+    targetPort: 9080
+    port: 80
