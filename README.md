@@ -25,4 +25,4 @@ Below table shows the list of samples available in this repository.
 | Sample                           | Description                                | Guide                            |
 |----------------------------------|--------------------------------------------|----------------------------------|
 | [`javaee-app-simple-cluster`](javaee-app-simple-cluster) | Deploy a simple cluster of Java EE application with Open Liberty/WebSphere Liberty on an AKS cluster. | [howto-guide](https://docs.microsoft.com/azure/aks/howto-deploy-java-liberty-app) |
-| [`javaee-app-jcache`](javaee-app-jcache) | Deploy a simple cluster of Java EE application with Open Liberty/WebSphere Liberty on an AKS cluster, whose session cache is backed by the Azure Cache for Redis instance. | TODO |
+| [`javaee-app-lg-sample`](javaee-app-lg-sample) | Deploy a simple cluster of Java EE application with Open Liberty/WebSphere Liberty on user node pool of an AKS cluster, integrated with Azure Application Gateway Ingress Controller. | [howto-guide](javaee-app-lg-sample/README.md) |

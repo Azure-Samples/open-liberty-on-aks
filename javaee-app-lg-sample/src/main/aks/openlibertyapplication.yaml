@@ -1,0 +1,22 @@
+apiVersion: openliberty.io/v1beta1
+kind: OpenLibertyApplication
+metadata:
+  name: ${APPLICATION_NAME}
+  namespace: ${APPLICATION_NAMESPACE}
+spec:
+  replicas: ${REPLICAS}
+  applicationImage: ${LOGIN_SERVER}/${project.artifactId}:${project.version}
+  pullPolicy: Always
+  pullSecret: ${PULL_SECRET_NAME}
+  service:
+    type: ClusterIP
+    port: 9080
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: ${NODE_LABEL_KEY}
+            operator: In
+            values:
+            - ${NODE_LABEL_VALUE}
