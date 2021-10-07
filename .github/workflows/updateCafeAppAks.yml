@@ -213,7 +213,7 @@ jobs:
                 path: javaee-app-db-using-actions/src/main/aks/db-secret-sub.yaml
             - name: Update image path and place in values
               run: |
-                cd javaee-app-db-using-actions/src/main/aks
+                cd javaee-app-db-using-actions/target
                 Container_Registry_URL=${{ github.event.inputs.acrName }}.azurecr.io
                 IFS=':' read -a arr <<< ${{ github.event.inputs.appImage }}
                 Image_Name=${arr[0]}
@@ -224,10 +224,10 @@ jobs:
               uses: actions/upload-artifact@v1
               with:
                 name: archivefiles
-                path: javaee-app-db-using-actions/src/main/aks/openlibertyapplication.yaml
+                path: javaee-app-db-using-actions/target/openlibertyapplication.yaml
             - name: Connect to AKS cluster
               run: |
-                cd javaee-app-db-using-actions/src/main/aks
+                cd javaee-app-db-using-actions/target
                 az aks get-credentials --resource-group ${{ github.event.inputs.clusterRGName }} --name ${{ github.event.inputs.clusterName }}
                 cat db-secret-sub.yaml
                 kubectl apply -f db-secret-sub.yaml
