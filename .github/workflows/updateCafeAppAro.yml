@@ -6,31 +6,24 @@ on:
       appDeploymentYamlEncoded:
         description: "Encoded deployment file"
         required: true
-        default: 'IyAgICAgIENvcHlyaWdodCAoYykgTWljcm9zb2Z0IENvcnBvcmF0aW9uLgojIAojICBMaWNlbnNlZCB1bmRlciB0aGUgQXBhY2hlIExpY2Vuc2UsIFZlcnNpb24gMi4wICh0aGUgIkxpY2Vuc2UiKTsKIyAgeW91IG1heSBub3QgdXNlIHRoaXMgZmlsZSBleGNlcHQgaW4gY29tcGxpYW5jZSB3aXRoIHRoZSBMaWNlbnNlLgojICBZb3UgbWF5IG9idGFpbiBhIGNvcHkgb2YgdGhlIExpY2Vuc2UgYXQKIyAKIyAgICAgICAgICAgaHR0cDovL3d3dy5hcGFjaGUub3JnL2xpY2Vuc2VzL0xJQ0VOU0UtMi4wCiMgCiMgIFVubGVzcyByZXF1aXJlZCBieSBhcHBsaWNhYmxlIGxhdyBvciBhZ3JlZWQgdG8gaW4gd3JpdGluZywgc29mdHdhcmUKIyAgZGlzdHJpYnV0ZWQgdW5kZXIgdGhlIExpY2Vuc2UgaXMgZGlzdHJpYnV0ZWQgb24gYW4gIkFTIElTIiBCQVNJUywKIyAgV0lUSE9VVCBXQVJSQU5USUVTIE9SIENPTkRJVElPTlMgT0YgQU5ZIEtJTkQsIGVpdGhlciBleHByZXNzIG9yIGltcGxpZWQuCiMgIFNlZSB0aGUgTGljZW5zZSBmb3IgdGhlIHNwZWNpZmljIGxhbmd1YWdlIGdvdmVybmluZyBwZXJtaXNzaW9ucyBhbmQKIyAgbGltaXRhdGlvbnMgdW5kZXIgdGhlIExpY2Vuc2UuCgphcGlWZXJzaW9uOiBvcGVubGliZXJ0eS5pby92MWJldGExCmtpbmQ6IE9wZW5MaWJlcnR5QXBwbGljYXRpb24KbWV0YWRhdGE6CiAgbmFtZTogYXBwNjlmODY0CiAgbmFtZXNwYWNlOiBwcm9qZWN0NjlmODY0CnNwZWM6CiAgcmVwbGljYXM6IDIKICBhcHBsaWNhdGlvbkltYWdlOiBpbWFnZTY5Zjg2NDoxLjAuMAogIGV4cG9zZTogdHJ1ZQo='
       appDockerfileEncoded:
         description: "Encoded Dockerfile"
         required: true
-        default: 'IyAgICAgIENvcHlyaWdodCAoYykgTWljcm9zb2Z0IENvcnBvcmF0aW9uLgojIAojICBMaWNlbnNlZCB1bmRlciB0aGUgQXBhY2hlIExpY2Vuc2UsIFZlcnNpb24gMi4wICh0aGUgIkxpY2Vuc2UiKTsKIyAgeW91IG1heSBub3QgdXNlIHRoaXMgZmlsZSBleGNlcHQgaW4gY29tcGxpYW5jZSB3aXRoIHRoZSBMaWNlbnNlLgojICBZb3UgbWF5IG9idGFpbiBhIGNvcHkgb2YgdGhlIExpY2Vuc2UgYXQKIyAKIyAgICAgICAgICAgaHR0cDovL3d3dy5hcGFjaGUub3JnL2xpY2Vuc2VzL0xJQ0VOU0UtMi4wCiMgCiMgIFVubGVzcyByZXF1aXJlZCBieSBhcHBsaWNhYmxlIGxhdyBvciBhZ3JlZWQgdG8gaW4gd3JpdGluZywgc29mdHdhcmUKIyAgZGlzdHJpYnV0ZWQgdW5kZXIgdGhlIExpY2Vuc2UgaXMgZGlzdHJpYnV0ZWQgb24gYW4gIkFTIElTIiBCQVNJUywKIyAgV0lUSE9VVCBXQVJSQU5USUVTIE9SIENPTkRJVElPTlMgT0YgQU5ZIEtJTkQsIGVpdGhlciBleHByZXNzIG9yIGltcGxpZWQuCiMgIFNlZSB0aGUgTGljZW5zZSBmb3IgdGhlIHNwZWNpZmljIGxhbmd1YWdlIGdvdmVybmluZyBwZXJtaXNzaW9ucyBhbmQKIyAgbGltaXRhdGlvbnMgdW5kZXIgdGhlIExpY2Vuc2UuCgojIE9wZW4gTGliZXJ0eSBiYXNlIGltYWdlCkZST00gb3BlbmxpYmVydHkvb3Blbi1saWJlcnR5Omtlcm5lbC1qYXZhOC1vcGVuajktdWJpCgojIEFkZCBjb25maWcgYW5kIGFwcApDT1BZIC0tY2hvd249MTAwMTowIHNlcnZlci54bWwgL2NvbmZpZy9zZXJ2ZXIueG1sCkNPUFkgLS1jaG93bj0xMDAxOjAgYXBwNjlmODY0LndhciAvY29uZmlnL2FwcHMvCgojIFRoaXMgc2NyaXB0IHdpbGwgYWRkIHRoZSByZXF1ZXN0ZWQgWE1MIHNuaXBwZXRzLCBncm93IGltYWdlIHRvIGJlIGZpdC1mb3ItcHVycG9zZSBhbmQgYXBwbHkgaW50ZXJpbSBmaXhlcwpSVU4gY29uZmlndXJlLnNoCg=='
       appImage:
         description: "App image"
         required: true
-        default: 'image69f864:1.0.0'
       appName:
         description: "Open Liberty App name"
         required: true
-        default: 'app69f864'
       appNamespace:
         description: "Open Liberty App namespace"
         required: true
-        default: 'project69f864'
       appServerXmlEncoded:
         description: "Encoded Server.xml"
         required: true
-        default: 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPCEtLQogICAgIENvcHlyaWdodCAoYykgTWljcm9zb2Z0IENvcnBvcmF0aW9uLgoKIExpY2Vuc2VkIHVuZGVyIHRoZSBBcGFjaGUgTGljZW5zZSwgVmVyc2lvbiAyLjAgKHRoZSAiTGljZW5zZSIpOwogeW91IG1heSBub3QgdXNlIHRoaXMgZmlsZSBleGNlcHQgaW4gY29tcGxpYW5jZSB3aXRoIHRoZSBMaWNlbnNlLgogWW91IG1heSBvYnRhaW4gYSBjb3B5IG9mIHRoZSBMaWNlbnNlIGF0CgogICAgICAgICAgaHR0cDovL3d3dy5hcGFjaGUub3JnL2xpY2Vuc2VzL0xJQ0VOU0UtMi4wCgogVW5sZXNzIHJlcXVpcmVkIGJ5IGFwcGxpY2FibGUgbGF3IG9yIGFncmVlZCB0byBpbiB3cml0aW5nLCBzb2Z0d2FyZQogZGlzdHJpYnV0ZWQgdW5kZXIgdGhlIExpY2Vuc2UgaXMgZGlzdHJpYnV0ZWQgb24gYW4gIkFTIElTIiBCQVNJUywKIFdJVEhPVVQgV0FSUkFOVElFUyBPUiBDT05ESVRJT05TIE9GIEFOWSBLSU5ELCBlaXRoZXIgZXhwcmVzcyBvciBpbXBsaWVkLgogU2VlIHRoZSBMaWNlbnNlIGZvciB0aGUgc3BlY2lmaWMgbGFuZ3VhZ2UgZ292ZXJuaW5nIHBlcm1pc3Npb25zIGFuZAogbGltaXRhdGlvbnMgdW5kZXIgdGhlIExpY2Vuc2UuCi0tPgoKPHNlcnZlciBkZXNjcmlwdGlvbj0iZGVmYXVsdFNlcnZlciI+CiAgICA8IS0tIFRPRE86IEVuYWJsZSBmZWF0dXJlcyB0aGF0J3JlIHNwZWNpZmllZCBieSB1c2VyIC0tPgogICAgPGZlYXR1cmVNYW5hZ2VyPgogICAgICAgIDxmZWF0dXJlPmphdmFlZS04LjA8L2ZlYXR1cmU+CiAgICAgICAgPGZlYXR1cmU+bWljcm9Qcm9maWxlLTMuMzwvZmVhdHVyZT4KICAgIDwvZmVhdHVyZU1hbmFnZXI+CgogICAgPCEtLSBUT0RPOiBEZWZpbmUgaHR0cCAmIGh0dHBzIGVuZHBvaW50cyB3aXRoIHVzZXIgc3BlY2lmaWVkIHBvcnRzIC0tPgogICAgPGh0dHBFbmRwb2ludCBpZD0iZGVmYXVsdEh0dHBFbmRwb2ludCIgaG9zdD0iKiIKICAgICAgICBodHRwUG9ydD0iOTA4MCIgaHR0cHNQb3J0PSI5NDQzIiAvPgoKICAgIDwhLS0gQXV0b21hdGljYWxseSBleHBhbmQgV0FSIGZpbGVzIGFuZCBFQVIgZmlsZXMgLS0+CiAgICA8YXBwbGljYXRpb25NYW5hZ2VyIGF1dG9FeHBhbmQ9InRydWUiIC8+CgogICAgPCEtLSBEZWZpbmUgd2ViIGFwcGxpY2F0aW9uIHdpdGggaXRzIGNvbnRleHQgcm9vdCBhbmQgbG9jYXRpb24gLS0+CiAgICA8d2ViQXBwbGljYXRpb24gaWQ9ImFwcDY5Zjg2NCIgY29udGV4dFJvb3Q9Ii9qYXZhZWVjYWZlIgogICAgICAgIGxvY2F0aW9uPSIke3NlcnZlci5jb25maWcuZGlyfS9hcHBzL2FwcDY5Zjg2NC53YXIiPgogICAgPC93ZWJBcHBsaWNhdGlvbj4KPC9zZXJ2ZXI+Cg=='
       clusterName: 
         description: "ARO cluster name"
         required: true
-        default: 'cluster69f864'
       clusterRGName: 
         description: "ARO cluster resource group name"
         required: true
@@ -42,14 +35,9 @@ on:
       projMgrUsername: 
         description: "Project manager has rights to view and modify any resource in the project except for quota."
         required: true
-        default: 'ejb100402o'
   repository_dispatch:
 
 env:
-    acrPassword: ${{ secrets.ACR_PASSWORD }}
-    # description: "ACR password"
-    # required: true
-    # default: 'Vnhbk2f0nGX=LubJJVZTafm9aeuB=Xik'
     azCliVersion: 2.23.0
     azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
     dbAdminUser: ${{ secrets.DB_ADMIN_USER }}
@@ -115,15 +103,15 @@ jobs:
             - name: Build the app
               run: |
                 echo "build the Cafe web app"
-                cd 3-integration/connect-db/postgres
+                cd javaee-app-db-using-actions
                 mvn clean install -Ddb.server.name=${{ env.dbServerName }}.postgres.database.azure.com -Ddb.port.number=5432 -Ddb.name=postgres -Ddb.user=${{ env.dbAdminUser }} -Ddb.password=${{ env.dbPassword }}
             - name: Download PostgreSQL driver
               run: |
-                cd 3-integration/connect-db/postgres
+                cd javaee-app-db-using-actions/target
                 wget -O postgresql-42.2.4.jar https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.4/postgresql-42.2.4.jar
             - name: Generate Server.xml
               run: |
-                cd 3-integration/connect-db/postgres
+                cd javaee-app-db-using-actions/target
                 echo ${{ github.event.inputs.appServerXmlEncoded }} | base64 --decode >> server.xml
                 xmlstarlet edit --inplace \
                     -d '/server/featureManager/feature' \
@@ -160,10 +148,10 @@ jobs:
               uses: actions/upload-artifact@v1
               with:
                 name: archivefiles
-                path: 3-integration/connect-db/postgres/server.xml
+                path: javaee-app-db-using-actions/target/server.xml
             - name: Generate deployment file
               run: |
-                cd 3-integration/connect-db/postgres
+                cd javaee-app-db-using-actions/target
                 echo ${{ github.event.inputs.appDeploymentYamlEncoded }} | base64 --decode >> openlibertyapplication.yaml
                 cat <<EOT >> openlibertyapplication.yaml
                   env:
@@ -195,7 +183,7 @@ jobs:
                 EOT
             - name: Generate Dockerfile
               run: |
-                cd 3-integration/connect-db/postgres
+                cd javaee-app-db-using-actions/target
                 echo ${{ github.event.inputs.appDockerfileEncoded }} | base64 --decode >> Dockerfile
                 # Remove current app configuration
                 sed -i "/${{ github.event.inputs.appName }}/d" Dockerfile
@@ -208,10 +196,10 @@ jobs:
               uses: actions/upload-artifact@v1
               with:
                 name: archivefiles
-                path: 3-integration/connect-db/postgres/Dockerfile
+                path: javaee-app-db-using-actions/target/Dockerfile
             - name: Build image
               run: |
-                cd 3-integration/connect-db/postgres
+                cd javaee-app-db-using-actions/target
                 docker build -t javaee-cafe-connect-db-postgres:1.0.0 --pull --file=Dockerfile .
             - name: Push image
               run: |
@@ -223,7 +211,7 @@ jobs:
                 docker push ${Container_Registry_URL}/${{ github.event.inputs.appNamespace }}/${Image_Name}:${{ github.run_id }}${{ github.run_number }}
             - name: Create DB Secret file
               run: |
-                cd 3-integration/connect-db/postgres
+                cd javaee-app-db-using-actions/src/main/aks
                 export NAMESPACE=${{ github.event.inputs.appNamespace }}
                 export DB_SERVER_NAME=${{ env.dbServerName }}.postgres.database.azure.com
                 export DB_PORT_NUMBER=5432
@@ -231,15 +219,15 @@ jobs:
                 export DB_USER=${{ env.dbAdminUser }}
                 export DB_PASSWORD=${{ env.dbPassword }}
 
-                envsubst < db-secret.yaml > db-secret-sub.yaml
+                envsubst < db-secret.yaml > ../../../target/db-secret-sub.yaml
             - name: Archive db-secret-sub.yaml
               uses: actions/upload-artifact@v1
               with:
                 name: archivefiles
-                path: 3-integration/connect-db/postgres/db-secret-sub.yaml
+                path: javaee-app-db-using-actions/target/db-secret-sub.yaml
             - name: Update image path and place in values
               run: |
-                cd 3-integration/connect-db/postgres
+                cd javaee-app-db-using-actions/target
                 Container_Registry_URL=${{ github.event.inputs.containerRegistryUrl }}
                 IFS=':' read -a arr <<< ${{ github.event.inputs.appImage }}
                 Image_Name=${arr[0]}
@@ -250,9 +238,9 @@ jobs:
               uses: actions/upload-artifact@v1
               with:
                 name: archivefiles
-                path: 3-integration/connect-db/postgres/openlibertyapplication.yaml
+                path: javaee-app-db-using-actions/target/openlibertyapplication.yaml
             - name: Connect to AKS cluster
               run: |
-                cd 3-integration/connect-db/postgres
+                cd javaee-app-db-using-actions/target
                 oc apply -f db-secret-sub.yaml
                 oc apply -f openlibertyapplication.yaml
