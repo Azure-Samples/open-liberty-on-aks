@@ -47,10 +47,10 @@ msg() {
 
 setup_colors
 
-read -r -p "Paste password for Container Registry" ACR_PASSWORD
-read -r -p "Enter admin user for database" DB_ADMIN_USER
-read -r -p "Paste password for database" DB_PASSWORD
-read -r -p "Paste database server name" DB_SERVER_NAME
+read -r -p "Paste password for Container Registry: " ACR_PASSWORD
+read -r -p "Enter admin user for database: " DB_ADMIN_USER
+read -r -p "Paste password for database: " DB_PASSWORD
+read -r -p "Paste database server name: " DB_SERVER_NAME
 read -r -p "Enter an at least three letter long disambiguation prefix (try your initials): " DISAMBIG_PREFIX
 read -r -p "Enter owner/reponame of GitHub repository (blank for upsteam of current fork): " OWNER_REPONAME
 
