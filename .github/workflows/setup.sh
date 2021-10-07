@@ -59,6 +59,11 @@ if [ "$DISAMBIG_PREFIX" == '' ] ; then
   exit 1;
 fi
 
+if [ "$ACR_PASSWORD" == '' ] ; then
+  ACR_PASSWORD="redacted"
+fi
+
+
 if [ -z "${OWNER_REPONAME}" ] ; then
     GH_FLAGS=""
 else
