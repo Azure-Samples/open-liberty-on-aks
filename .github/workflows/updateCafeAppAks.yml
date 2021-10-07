@@ -205,12 +205,12 @@ jobs:
                 export DB_USER=${{ env.dbAdminUser }}
                 export DB_PASSWORD=${{ env.dbPassword }}
 
-                envsubst < db-secret.yaml > db-secret-sub.yaml
+                envsubst < db-secret.yaml > ../../../target/db-secret-sub.yaml
             - name: Archive db-secret-sub.yaml
               uses: actions/upload-artifact@v1
               with:
                 name: archivefiles
-                path: javaee-app-db-using-actions/src/main/aks/db-secret-sub.yaml
+                path: javaee-app-db-using-actions/target/db-secret-sub.yaml
             - name: Update image path and place in values
               run: |
                 cd javaee-app-db-using-actions/target
