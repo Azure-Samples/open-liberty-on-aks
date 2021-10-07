@@ -1,4 +1,4 @@
-name: AKS: Update Cafe App with PostgreSQL DB connection
+name: AKS Update Cafe App with PostgreSQL DB connection
 
 on:
   workflow_dispatch:
