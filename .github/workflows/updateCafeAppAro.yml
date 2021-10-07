@@ -102,7 +102,7 @@ jobs:
               run: |
                 echo "build the Cafe web app"
                 cd javaee-app-db-using-actions
-                mvn clean install -Ddb.server.name=${{ env.dbServerName }}.postgres.database.azure.com -Ddb.port.number=5432 -Ddb.name=postgres -Ddb.user=${{ env.dbAdminUser }} -Ddb.password=${{ env.dbPassword }}
+                mvn clean install -Ddb.server.name=${{ env.dbServerName }}
             - name: Download PostgreSQL driver
               run: |
                 cd javaee-app-db-using-actions/target
@@ -211,7 +211,7 @@ jobs:
               run: |
                 cd javaee-app-db-using-actions/src/main/aks
                 export NAMESPACE=${{ github.event.inputs.appNamespace }}
-                export DB_SERVER_NAME=${{ env.dbServerName }}.postgres.database.azure.com
+                export DB_SERVER_NAME=${{ env.dbServerName }}
                 export DB_PORT_NUMBER=5432
                 export DB_NAME=postgres
                 export DB_USER=${{ env.dbAdminUser }}
@@ -237,7 +237,7 @@ jobs:
               with:
                 name: archivefiles
                 path: javaee-app-db-using-actions/target/openlibertyapplication.yaml
-            - name: Connect to AKS cluster
+            - name: Connect to ARO cluster
               run: |
                 cd javaee-app-db-using-actions/target
                 oc apply -f db-secret-sub.yaml
