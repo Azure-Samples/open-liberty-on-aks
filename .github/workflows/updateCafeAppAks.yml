@@ -6,7 +6,6 @@ on:
       acrName: 
         description: "ACR name"
         required: true
-        default: 'acr290e62'
       appDeploymentYamlEncoded:
         description: "Encoded deployment file"
         required: true
@@ -16,26 +15,21 @@ on:
       appImage:
         description: "App image"
         required: true
-        default: 'image290e62:1.0.0'
       appName:
         description: "Open Liberty App name"
         required: true
-        default: 'app290e62'
       appNamespace:
         description: "Open Liberty App namespace"
         required: true
-        default: 'project290e62'
       appServerXmlEncoded:
         description: "Encoded Server.xml"
         required: true
       clusterName: 
         description: "AKS cluster name"
         required: true
-        default: 'cluster290e62'
       clusterRGName: 
         description: "AKS cluster resource group name"
         required: true
-        default: 'zhengtest0928rg'
   repository_dispatch:
 
 env:
