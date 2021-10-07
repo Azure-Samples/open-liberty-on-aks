@@ -47,7 +47,7 @@ msg() {
 
 setup_colors
 
-read -r -p "Paste password for Container Registry: " ACR_PASSWORD
+read -r -p "Paste password for Container Registry (enter to skip): " ACR_PASSWORD
 read -r -p "Enter admin user for database: " DB_ADMIN_USER
 read -r -p "Paste password for database: " DB_PASSWORD
 read -r -p "Paste database server name: " DB_SERVER_NAME
@@ -60,7 +60,7 @@ if [ "$DISAMBIG_PREFIX" == '' ] ; then
 fi
 
 if [ -z "${OWNER_REPONAME}" ] ; then
-    GH_FLAGS="--repo edburns/open-liberty-on-aks-1"
+    GH_FLAGS=""
 else
     GH_FLAGS="--repo ${OWNER_REPONAME}"
 fi
