@@ -27,11 +27,9 @@ on:
       clusterRGName: 
         description: "ARO cluster resource group name"
         required: true
-        default: 'ejb100402o'
       containerRegistryUrl: 
         description: "Container Registry URL"
         required: true
-        default: 'default-route-openshift-image-registry.apps.domain69f864.eastus.aroapp.io'
       projMgrUsername: 
         description: "Project manager has rights to view and modify any resource in the project except for quota."
         required: true
