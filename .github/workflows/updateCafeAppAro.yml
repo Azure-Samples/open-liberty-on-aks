@@ -234,8 +234,9 @@ jobs:
             - name: Update image path and place in values
               run: |
                 cd javaee-app-db-using-actions/target
+                appImageNew=$(echo ${{ github.event.inputs.newAppTuple }} | cut -d',' -f2)
                 Container_Registry_URL=${{ github.event.inputs.containerRegistryUrl }}
-                IFS=':' read -a arr <<< ${{ github.event.inputs.appImageNew }}
+                IFS=':' read -a arr <<< ${appImageNew}
                 Image_Name=${arr[0]}
                 sed -i "/applicationImage/d" openlibertyapplication.yaml
                 lineNumber=$(grep -n 'replicas' openlibertyapplication.yaml | grep -Eo '^[^:]+')

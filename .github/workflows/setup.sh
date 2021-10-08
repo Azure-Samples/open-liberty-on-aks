@@ -48,6 +48,7 @@ msg() {
 setup_colors
 
 read -r -p "Paste password for Container Registry (enter to skip): " ACR_PASSWORD
+read -r -p "Enter password OpenShift manager (enter to skip): " OC_MANAGER_PASSWORD
 read -r -p "Enter admin user for database: " DB_ADMIN_USER
 read -r -p "Paste password for database: " DB_PASSWORD
 read -r -p "Paste database server name: " DB_SERVER_NAME
