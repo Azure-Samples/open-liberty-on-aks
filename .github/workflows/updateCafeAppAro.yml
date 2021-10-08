@@ -207,15 +207,18 @@ jobs:
             - name: Push image
               run: |
                 Container_Registry_URL=${{ github.event.inputs.containerRegistryUrl }}
-                IFS=':' read -a arr <<< ${{ github.event.inputs.appImageNew }}
+                appImageNew=$(echo ${{ github.event.inputs.newAppTuple }} | cut -d',' -f2)
+                appProjectNameNew=$(echo ${{ github.event.inputs.newAppTuple }} | cut -d',' -f3)
+                IFS=':' read -a arr <<< ${appImageNew}
                 Image_Name=${arr[0]}
                 echo $Image_name
-                docker tag javaee-cafe-connect-db-postgres:1.0.0 ${Container_Registry_URL}/${{ github.event.inputs.appProjectNameNew }}/${Image_Name}:${{ github.run_id }}${{ github.run_number }}
-                docker push ${Container_Registry_URL}/${{ github.event.inputs.appProjectNameNew }}/${Image_Name}:${{ github.run_id }}${{ github.run_number }}
+                docker tag javaee-cafe-connect-db-postgres:1.0.0 ${Container_Registry_URL}/${appProjectNameNew}/${Image_Name}:${{ github.run_id }}${{ github.run_number }}
+                docker push ${Container_Registry_URL}/${appProjectNameNew}/${Image_Name}:${{ github.run_id }}${{ github.run_number }}
             - name: Create DB Secret file
               run: |
                 cd javaee-app-db-using-actions/src/main/aks
-                export NAMESPACE=${{ github.event.inputs.appProjectNameNew }}
+                appProjectNameNew=$(echo ${{ github.event.inputs.newAppTuple }} | cut -d',' -f3)
+                export NAMESPACE=${appProjectNameNew}
                 export DB_SERVER_NAME=${{ env.dbServerName }}
                 export DB_PORT_NUMBER=5432
                 export DB_NAME=postgres
