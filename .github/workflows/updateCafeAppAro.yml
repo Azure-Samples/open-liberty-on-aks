@@ -94,7 +94,7 @@ jobs:
                 oc version
                 apiServer=$(az aro show --name ${{ github.event.inputs.clusterName }} --resource-group ${{ github.event.inputs.clusterRGName }} --query apiserverProfile.url -o tsv)
                 projMgrUsername=$(echo ${{ github.event.inputs.newAppTuple }} | cut -d',' -f1)
-                oc login $apiServer -u ${projMgrUsername} -p ${{ secrets.OC_MANAGER_PASSWORD }}
+                oc login $apiServer -u ${projMgrUsername} -p ${{ secrets.ARO_PASSWORD }}
                 Container_Registry_URL=${{ github.event.inputs.containerRegistryUrl }}
                 docker login -u $(oc whoami) -p $(oc whoami -t) ${Container_Registry_URL}
             - name: Checkout open-liberty-on-aks
