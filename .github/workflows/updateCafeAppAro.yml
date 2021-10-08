@@ -12,17 +12,11 @@ on:
       appImageExisting:
         description: "Existing app image"
         required: true
-      appImageNew:
-        description: "New app image"
-        required: true
       appName:
         description: "Open Liberty App name"
         required: true
       appProjectNameExisting:
         description: "Existing Open Liberty Project Name"
-        required: true
-      appProjectNameNew:
-        description: "New Open Liberty Project Name"
         required: true
       appServerXmlEncoded:
         description: "Encoded Server.xml"
@@ -36,8 +30,8 @@ on:
       containerRegistryUrl: 
         description: "Container Registry URL"
         required: true
-      projMgrUsername: 
-        description: "Project manager username"
+      newAppTuple: 
+        description: "Project manager username,new app name, new app namespace"
         required: true
   repository_dispatch:
 
@@ -99,7 +93,8 @@ jobs:
               run: |
                 oc version
                 apiServer=$(az aro show --name ${{ github.event.inputs.clusterName }} --resource-group ${{ github.event.inputs.clusterRGName }} --query apiserverProfile.url -o tsv)
-                oc login $apiServer -u ${{ github.event.inputs.projMgrUsername }} -p ${{ secrets.OC_MANAGER_PASSWORD }}
+                projMgrUsername=$(echo ${{ github.event.inputs.newAppTuple }} | cut -d',' -f1)
+                oc login $apiServer -u ${projMgrUsername} -p ${{ secrets.OC_MANAGER_PASSWORD }}
                 Container_Registry_URL=${{ github.event.inputs.containerRegistryUrl }}
                 docker login -u $(oc whoami) -p $(oc whoami -t) ${Container_Registry_URL}
             - name: Checkout open-liberty-on-aks
@@ -185,8 +180,10 @@ jobs:
                         name: db-secret-postgres
                         key: db.password
                 EOT
-                sed -i "s/name: ${{ github.event.inputs.appImageExisting }}/name: ${{ github.event.inputs.appImageNew }}/g" openlibertyapplication.yaml
-                sed -i "s/namespace: ${{ github.event.inputs.appProjectNameExisting }}/namespace: ${{ github.event.inputs.appProjectNameNew }}/g" openlibertyapplication.yaml
+                appImageNew=$(echo ${{ github.event.inputs.newAppTuple }} | cut -d',' -f2)
+                appProjectNameNew=$(echo ${{ github.event.inputs.newAppTuple }} | cut -d',' -f3)
+                sed -i "s/name: ${{ github.event.inputs.appImageExisting }}/name: ${appImageNew}/g" openlibertyapplication.yaml
+                sed -i "s/namespace: ${{ github.event.inputs.appProjectNameExisting }}/namespace: ${appProjectNameNew}/g" openlibertyapplication.yaml
             - name: Generate Dockerfile
               run: |
                 cd javaee-app-db-using-actions/target
