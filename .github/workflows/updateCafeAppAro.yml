@@ -9,14 +9,20 @@ on:
       appDockerfileEncoded:
         description: "Encoded Dockerfile"
         required: true
-      appImage:
-        description: "App image"
+      appImageExisting:
+        description: "Existing app image"
+        required: true
+      appImageNew:
+        description: "New app image"
         required: true
       appName:
         description: "Open Liberty App name"
         required: true
-      appNamespace:
-        description: "Open Liberty App namespace"
+      appProjectNameExisting:
+        description: "Existing Open Liberty Project Name"
+        required: true
+      appProjectNameNew:
+        description: "New Open Liberty Project Name"
         required: true
       appServerXmlEncoded:
         description: "Encoded Server.xml"
@@ -179,6 +185,8 @@ jobs:
                         name: db-secret-postgres
                         key: db.password
                 EOT
+                sed -i "s/name: ${{ github.event.inputs.appImageExisting }}/name: ${{ github.event.inputs.appImageNew }}/g" openlibertyapplication.yaml
+                sed -i "s/namespace: ${{ github.event.inputs.appProjectNameExisting }}/namespace: ${{ github.event.inputs.appProjectNameNew }}/g" openlibertyapplication.yaml
             - name: Generate Dockerfile
               run: |
                 cd javaee-app-db-using-actions/target
@@ -202,15 +210,15 @@ jobs:
             - name: Push image
               run: |
                 Container_Registry_URL=${{ github.event.inputs.containerRegistryUrl }}
-                IFS=':' read -a arr <<< ${{ github.event.inputs.appImage }}
+                IFS=':' read -a arr <<< ${{ github.event.inputs.appImageNew }}
                 Image_Name=${arr[0]}
                 echo $Image_name
-                docker tag javaee-cafe-connect-db-postgres:1.0.0 ${Container_Registry_URL}/${{ github.event.inputs.appNamespace }}/${Image_Name}:${{ github.run_id }}${{ github.run_number }}
-                docker push ${Container_Registry_URL}/${{ github.event.inputs.appNamespace }}/${Image_Name}:${{ github.run_id }}${{ github.run_number }}
+                docker tag javaee-cafe-connect-db-postgres:1.0.0 ${Container_Registry_URL}/${{ github.event.inputs.appProjectNameNew }}/${Image_Name}:${{ github.run_id }}${{ github.run_number }}
+                docker push ${Container_Registry_URL}/${{ github.event.inputs.appProjectNameNew }}/${Image_Name}:${{ github.run_id }}${{ github.run_number }}
             - name: Create DB Secret file
               run: |
                 cd javaee-app-db-using-actions/src/main/aks
-                export NAMESPACE=${{ github.event.inputs.appNamespace }}
+                export NAMESPACE=${{ github.event.inputs.appProjectNameNew }}
                 export DB_SERVER_NAME=${{ env.dbServerName }}
                 export DB_PORT_NUMBER=5432
                 export DB_NAME=postgres
@@ -227,7 +235,7 @@ jobs:
               run: |
                 cd javaee-app-db-using-actions/target
                 Container_Registry_URL=${{ github.event.inputs.containerRegistryUrl }}
-                IFS=':' read -a arr <<< ${{ github.event.inputs.appImage }}
+                IFS=':' read -a arr <<< ${{ github.event.inputs.appImageNew }}
                 Image_Name=${arr[0]}
                 sed -i "/applicationImage/d" openlibertyapplication.yaml
                 lineNumber=$(grep -n 'replicas' openlibertyapplication.yaml | grep -Eo '^[^:]+')
