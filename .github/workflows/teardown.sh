@@ -77,6 +77,7 @@ if $USE_GITHUB_CLI; then
   {
     msg "${GREEN}Using the GitHub CLI to remove secrets.${NOFORMAT}"
     gh ${GH_FLAGS} secret remove ACR_PASSWORD
+    gh ${GH_FLAGS} secret remove ARO_PASSWORD
     gh ${GH_FLAGS} secret remove AZURE_CREDENTIALS
     gh ${GH_FLAGS} secret remove DB_ADMIN_USER
     gh ${GH_FLAGS} secret remove DB_PASSWORD
@@ -92,6 +93,7 @@ if [ $USE_GITHUB_CLI == false ]; then
   msg "${NOFORMAT}In the \"settings\", go to the \"secrets\" tab and remove the following secrets:"
   msg "(in ${YELLOW}yellow the secret name)"
   msg "${YELLOW}\"ACR_PASSWORD\""
+  msg "${YELLOW}\"ARO_PASSWORD\""
   msg "${YELLOW}\"AZURE_CREDENTIALS\""
   msg "${YELLOW}\"DB_ADMIN_USER\""
   msg "${YELLOW}\"DB_PASSWORD\""

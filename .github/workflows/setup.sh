@@ -48,6 +48,7 @@ msg() {
 setup_colors
 
 read -r -p "Paste password for Container Registry (enter to skip): " ACR_PASSWORD
+read -r -p "Enter password OpenShift userid: " ARO_PASSWORD
 read -r -p "Enter admin user for database: " DB_ADMIN_USER
 read -r -p "Paste password for database: " DB_PASSWORD
 read -r -p "Paste database server name: " DB_SERVER_NAME
@@ -163,6 +164,7 @@ if $USE_GITHUB_CLI; then
   {
     msg "${GREEN}Using the GitHub CLI to set secrets.${NOFORMAT}"
     gh ${GH_FLAGS} secret set ACR_PASSWORD -b"${ACR_PASSWORD}"
+    gh ${GH_FLAGS} secret set ARO_PASSWORD -b"${ARO_PASSWORD}"    
     gh ${GH_FLAGS} secret set AZURE_CREDENTIALS -b"${AZURE_CREDENTIALS}"
     gh ${GH_FLAGS} secret set DB_ADMIN_USER -b"${DB_ADMIN_USER}"
     gh ${GH_FLAGS} secret set DB_PASSWORD -b"${DB_PASSWORD}"
@@ -179,6 +181,8 @@ if [ $USE_GITHUB_CLI == false ]; then
   msg "(in ${YELLOW}yellow the secret name and${NOFORMAT} in ${GREEN}green the secret value)"
   msg "${YELLOW}\"ACR_PASSWORD\""
   msg "${GREEN}${ACR_PASSWORD}"
+  msg "${YELLOW}\"ARO_PASSWORD\""
+  msg "${GREEN}${ARO_PASSWORD}"
   msg "${YELLOW}\"AZURE_CREDENTIALS\""
   msg "${GREEN}${AZURE_CREDENTIALS}"
   msg "${YELLOW}\"DB_ADMIN_USER\""
