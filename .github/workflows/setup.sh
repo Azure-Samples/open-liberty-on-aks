@@ -15,7 +15,7 @@
 ################################################
 # Set environment variables - the main variables you might want to configure.
 #
-# Three letters to disambiguate names. Leave blank to use ejb.
+# Three letters to disambiguate names.
 DISAMBIG_PREFIX=
 # The location of the resource group. For example `eastus`. Leave blank to use your default location.
 LOCATION=
