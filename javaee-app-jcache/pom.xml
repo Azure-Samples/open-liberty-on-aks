@@ -111,6 +111,21 @@
         <version>3.2.0</version>
         <executions>
           <execution>
+            <id>01-dockerfile</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/docker</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
           <execution>
             <id>03-redisson-config</id>
             <phase>validate</phase>
