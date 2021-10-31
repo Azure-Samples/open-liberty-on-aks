@@ -28,10 +28,6 @@
 			<h3>
 				<h:outputText value="#{messages.ourMenu}" />
 			</h3>
-            <h3>
-              Session entry count: <h:outputText value="#{cafe.sessionEntryCount}" />
-            </h3>
-
 			<h:dataTable id="coffeeList" value="#{cafe.coffeeList}" border="1"
 				var="coffee" styleClass="table">
 				<h:column>
@@ -59,7 +55,7 @@
 			</h:dataTable>
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h:outputText value="#{messages.addCoffee}" />
+					<h:outputText value="New coffee in session" />
 				</div>
 				<div class="panel-body">
 					<h:outputText value="#{messages.name} " />
@@ -74,6 +70,8 @@
 					<p />
 					<h:commandButton value="#{messages.submit}"
 						action="#{cafe.addCoffee}" styleClass="btn btn-default" />
+                    <p />
+                    Submit count: <h:outputText value="#{cafe.submitCount}" />
 				</div>
 			</div>
 		</div>

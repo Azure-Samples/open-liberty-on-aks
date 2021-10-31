@@ -35,6 +35,7 @@ public class Cafe implements Serializable {
     protected String name;
     @NotNull
     protected Double price;
+    protected Long submitCount;
     protected List<Coffee> coffeeList;
 
     public String getName() {
@@ -62,8 +63,8 @@ public class Cafe implements Serializable {
         return System.getenv("HOSTNAME");
     }
 
-    public String getSessionEntryCount() {
-        return "" + FacesContext.getCurrentInstance().getExternalContext().getSessionMap().size();
+    public Long getSubmitCount() {
+        return submitCount;
     }
 
     @PostConstruct
@@ -73,6 +74,11 @@ public class Cafe implements Serializable {
 
         baseUri = "http://localhost:9080" + request.getContextPath() + "/rest/coffees";
         this.client = ClientBuilder.newBuilder().build();
+
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        this.name = (String) sessionMap.get("newCoffeeName");
+        this.price = (Double) sessionMap.get("newCoffeePrice");
+        this.submitCount =  sessionMap.containsKey("newCoffeeSubmitCount") ? (Long) sessionMap.get("newCoffeeSubmitCount") : 0;
     }
 
     private void getAllCoffees() {
@@ -82,15 +88,16 @@ public class Cafe implements Serializable {
     }
 
     public void addCoffee() throws IOException {
-        Coffee coffee = new Coffee(this.name, this.price);
-        this.client.target(baseUri).request(MediaType.APPLICATION_JSON).post(Entity.json(coffee));
-        this.name = null;
-        this.price = null;
-        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-        Map<String, Object> sessionMap = ec.getSessionMap();
-        sessionMap.put("" + System.currentTimeMillis(), coffee.toString());
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        sessionMap.put("newCoffeeName", this.name);
+        sessionMap.put("newCoffeePrice", this.price);
+        sessionMap.put("newCoffeeSubmitCount", ++this.submitCount);
 
-        ec.redirect("");
+        Coffee coffee = new Coffee(this.name, this.price);
+        coffee.setId(this.submitCount);
+        sessionMap.put("newCoffee", coffee.toString());
+
+        FacesContext.getCurrentInstance().getExternalContext().redirect("");
     }
 
     public void removeCoffee(String coffeeId) throws IOException {
