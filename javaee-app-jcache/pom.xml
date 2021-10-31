@@ -21,8 +21,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <javaee.api.version>8.0</javaee.api.version>
     <liberty.bootstrap.artifactId>${project.artifactId}</liberty.bootstrap.artifactId>
-    <registry.login.server>${env.REGISTRY_LOGIN_SERVER}</registry.login.server>
-    <pullSecret.name>${env.PULLSECRET_NAME}</pullSecret.name>
+    <registry.login.server>${env.LOGIN_SERVER}</registry.login.server>
     <singleServerConfig.password>${env.REDISCACHEKEY}</singleServerConfig.password>
     <singleServerConfig.address>rediss://${env.REDISCACHEHOSTNAME}:6380</singleServerConfig.address>
   </properties>
@@ -121,6 +120,22 @@
               <resources>
                 <resource>
                   <directory>src/main/docker</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>02-aks-config</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/aks</directory>
                   <filtering>true</filtering>
                 </resource>
               </resources>

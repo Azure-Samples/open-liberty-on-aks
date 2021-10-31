@@ -1,0 +1,22 @@
+apiVersion: openliberty.io/v1beta1
+kind: OpenLibertyApplication
+metadata:
+  name: ${project.artifactId}-cluster
+spec:
+  replicas: ${REPLICAS}
+  applicationImage: ${registry.login.server}/${project.artifactId}:${project.version}
+  pullPolicy: Always
+  pullSecret: ${PULL_SECRET_NAME}
+  service:
+    type: LoadBalancer
+    targetPort: 9080
+    port: 80
+  volumeMounts:
+  - name: redisson-config
+    mountPath: /opt/ol/wlp/usr/shared/resources/redisson-config.yaml
+    readOnly: true
+    subPath: redisson-config.yaml
+  volumes:
+  - name: redisson-config
+    secret:
+      secretName: ${REDISSON_CONFIG_SECRET_NAME}
