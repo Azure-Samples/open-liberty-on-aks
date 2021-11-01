@@ -24,7 +24,7 @@
 
     <!-- This yaml file could also be mounted and exposed via a ConfigMap or Kubernetes Secret -->
     <httpSessionCache libraryRef="jCacheVendorLib"
-                      uri="file:${shared.resource.dir}/redisson-config.yaml" />
+                      uri="file:${server.config.dir}/redisson-config.yaml" />
 
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true" />

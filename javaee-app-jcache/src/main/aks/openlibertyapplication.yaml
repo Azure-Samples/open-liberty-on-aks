@@ -13,7 +13,7 @@ spec:
     port: 80
   volumeMounts:
   - name: redisson-config
-    mountPath: /opt/ol/wlp/usr/shared/resources/redisson-config.yaml
+    mountPath: /config/redisson-config.yaml
     readOnly: true
     subPath: redisson-config.yaml
   volumes:

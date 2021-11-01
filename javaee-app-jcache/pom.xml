@@ -148,7 +148,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/liberty/wlp/usr/shared/resources</outputDirectory>
+              <outputDirectory>${project.build.directory}/liberty/wlp/usr/servers/defaultServer</outputDirectory>
               <resources>
                 <resource>
                   <directory>src/main/redisson</directory>
