@@ -22,6 +22,11 @@
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <javaee.api.version>8.0</javaee.api.version>
     <liberty.bootstrap.artifactId>${project.artifactId}</liberty.bootstrap.artifactId>
+    <liberty.bootstrap.db.server.name>${db.server.name}</liberty.bootstrap.db.server.name>
+    <liberty.bootstrap.db.port.number>${db.port.number}</liberty.bootstrap.db.port.number>
+    <liberty.bootstrap.db.name>${db.name}</liberty.bootstrap.db.name>
+    <liberty.bootstrap.db.user>${db.user}</liberty.bootstrap.db.user>
+    <liberty.bootstrap.db.password>${db.password}</liberty.bootstrap.db.password>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <param.login.server>${env.LOGIN_SERVER}</param.login.server>
@@ -30,6 +35,13 @@
     <param.pull.secret.name>acr-secret</param.pull.secret.name>
     <param.user.name>${env.USER_NAME}</param.user.name>
     <param.replicas>3</param.replicas>
+    <param.db.server.name>${env.DB_SERVER_NAME}</param.db.server.name>
+    <param.db.port.number>${env.DB_PORT_NUMBER}</param.db.port.number>
+    <param.db.name>${env.DB_TYPE}</param.db.name>
+    <param.db.user>${env.DB_USER}</param.db.user>
+    <param.db.password>${env.DB_PASSWORD}</param.db.password>
+    <param.pull.secret.name>${env.PULL_SECRET}</param.pull.secret.name>
+    <param.namespace>${env.NAMESPACE}</param.namespace>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
@@ -80,15 +92,49 @@
           </resource>
         </resources>        
         <plugins>
-          <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <version>3.2.0</version>
-          </plugin>          
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.2.0</version>
+          <executions>
+            <execution>
+              <id>01-dockerfile</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>copy-resources</goal>
+              </goals>
+              <configuration>
+                <outputDirectory>${basedir}/target</outputDirectory>
+                <resources>          
+                  <resource>
+                    <directory>src/main/docker</directory>
+                    <filtering>true</filtering>
+                  </resource>
+                </resources>              
+              </configuration>            
+            </execution>
+            <execution>
+              <id>02-aks-config</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>copy-resources</goal>
+              </goals>
+              <configuration>
+                <outputDirectory>${basedir}/target</outputDirectory>
+                <resources>          
+                  <resource>
+                    <directory>src/main/aks</directory>
+                    <filtering>true</filtering>
+                  </resource>
+                </resources>              
+              </configuration>            
+            </execution>
+          </executions>
+        </plugin> 
           <!-- Enable liberty-maven-plugin -->
           <plugin>
             <groupId>io.openliberty.tools</groupId>
             <artifactId>liberty-maven-plugin</artifactId>
-            <version>3.2</version>
+            <version>3.4</version>
             <executions>
               <execution>
                 <id>package-server</id>
