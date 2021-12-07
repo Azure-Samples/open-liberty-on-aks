@@ -48,9 +48,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.2.4</version>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>8.2.2.jre8</version>
       <type>jar</type>
     </dependency>    
   </dependencies>
@@ -124,7 +124,7 @@
                   <goal>copy-dependencies</goal>
                 </goals>
                 <configuration>
-                  <includeArtifactIds>postgresql</includeArtifactIds>
+                  <includeArtifactIds>mssql-jdbc</includeArtifactIds>
                   <outputDirectory>${project.build.directory}/liberty/wlp/usr/shared/resources</outputDirectory>
                 </configuration>
               </execution>
