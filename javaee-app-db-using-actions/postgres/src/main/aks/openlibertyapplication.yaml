@@ -10,8 +10,7 @@ spec:
   pullSecret: ${param.pull.secret.name}
   service:
     type: LoadBalancer
-    targetPort: 9080
-    port: 80
+    port: 9080
   env:
   - name: DB_SERVER_NAME
     valueFrom:
