@@ -74,7 +74,7 @@ You will need to create an AAG which will be used as the load balancer for your 
 wget https://raw.githubusercontent.com/oracle/weblogic-azure/main/weblogic-azure-aks/src/main/bicep/modules/_azure-resoruces/_appgateway.bicep -O appgateway.bicep
 
 # If The following command exited with error "Failed to parse 'appgateway.bicep', please check whether it is a valid JSON format", pls run `az upgrade` to upgrade Azure CLI
-result=$(az deployment group create -n testDeployment -g $RESOURCE_GROUP_NAME --template-file appgateway.bicep)
+result=$(az deployment group create -n testDeployment -g $RESOURCE_GROUP_NAME --template-file appgateway.bicep --parameters location=eastus)
 APPGW_NAME=$(echo $result | jq -r '.properties.outputs.appGatewayName.value')
 APPGW_VNET_NAME=$(echo $result | jq -r '.properties.outputs.vnetName.value')
 APPGW_URL=$(echo $result | jq -r '.properties.outputs.appGatewayURL.value')
