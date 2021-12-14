@@ -31,7 +31,6 @@
     <param.login.server>${env.LOGIN_SERVER}</param.login.server>
     <param.registry.name>${env.REGISTRY_NAME}</param.registry.name>
     <param.password>${env.PASSWORD}</param.password>
-    <param.pull.secret.name>acr-secret</param.pull.secret.name>
     <param.user.name>${env.USER_NAME}</param.user.name>
     <param.replicas>3</param.replicas>
     <param.db.server.name>${env.DB_SERVER_NAME}</param.db.server.name>
@@ -133,7 +132,7 @@
           <plugin>
             <groupId>io.openliberty.tools</groupId>
             <artifactId>liberty-maven-plugin</artifactId>
-            <version>3.4</version>
+            <version>3.5.1</version>
             <executions>
               <execution>
                 <id>package-server</id>
