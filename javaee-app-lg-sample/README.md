@@ -24,15 +24,137 @@ For more details on Open Liberty, see [the Open Liberty project page](https://op
   * Install [Docker](https://docs.docker.com/get-docker/) for your OS.
   * Install [`jq`](https://stedolan.github.io/jq/download/).
 
-## Create a resource group
+## Set up the infrastructure
 
-An Azure resource group is a logical group in which Azure resources are deployed and managed.  
-
-Create a resource group called *java-liberty-project* using the [az group create](/cli/azure/group#az_group_create) command  in the *eastus* location. This resource group will be used later for creating the ACR instance, the AAG, and the AKS cluster.
+In this section, you will create user-assigned manage identites, a virtual network, an AKS cluster, an AAG instance, and install Azure Application Gateway Controller (AGIC) using Helm.
 
 ```azurecli-interactive
-RESOURCE_GROUP_NAME=java-liberty-project
-az group create --name $RESOURCE_GROUP_NAME --location eastus
+# Create resource groups
+UAMI_RG_NAME=<uami-rg-name>
+VNET_RG_NAME=<vnet-rg-name>
+AG_RG_NAME=<ag-rg-name>
+AKS_RG_NAME=<aks-rg-name>
+az group create --name ${UAMI_RG_NAME} --location eastus
+az group create --name ${VNET_RG_NAME} --location eastus
+az group create --name ${AG_RG_NAME} --location eastus
+az group create --name ${AKS_RG_NAME} --location eastus
+
+# Create identities for AKS cluster
+CLUSTER_IDENTITY_NAME=cluster-identity
+KUBELET_IDENTITY_NAME=kubelet-identity
+az identity create --name ${CLUSTER_IDENTITY_NAME} --resource-group ${UAMI_RG_NAME}
+az identity create --name ${KUBELET_IDENTITY_NAME} --resource-group ${UAMI_RG_NAME}
+clusterIdentityId=$(az identity show -n ${CLUSTER_IDENTITY_NAME} -g ${UAMI_RG_NAME} -o tsv --query "id")
+kubeletIdentityId=$(az identity show -n ${KUBELET_IDENTITY_NAME} -g ${UAMI_RG_NAME} -o tsv --query "id")
+
+# Create vNet and subnets
+VNET_NAME=myVnet
+AG_SUBNET_NAME=agSubnet
+AKS_SUBNET_NAME=aksSubnet
+az network vnet create -n ${VNET_NAME} -g ${VNET_RG_NAME} --address-prefix 10.0.0.0/8
+az network vnet subnet create -n ${AG_SUBNET_NAME} --address-prefixes 10.241.0.0/16 --vnet-name ${VNET_NAME} -g ${VNET_RG_NAME}
+az network vnet subnet create -n ${AKS_SUBNET_NAME} --address-prefixes 10.240.0.0/16 --vnet-name ${VNET_NAME} -g ${VNET_RG_NAME}
+agSubnetId=$(az network vnet subnet show -n ${AG_SUBNET_NAME} --vnet-name ${VNET_NAME} -g ${VNET_RG_NAME} --query "id" --output tsv)
+aksSubnetId=$(az network vnet subnet show -n ${AKS_SUBNET_NAME} --vnet-name ${VNET_NAME} -g ${VNET_RG_NAME} --query "id" --output tsv)
+
+# Create Application Gateway
+PUBLIC_IP_NAME=myPublicIp
+az network public-ip create -n ${PUBLIC_IP_NAME} -g ${AG_RG_NAME} --allocation-method Static --sku Standard
+APPGW_NAME=myApplicationGateway
+az network application-gateway create \
+    --name ${APPGW_NAME} \
+    --resource-group ${AG_RG_NAME} \
+    --location eastus \
+    --sku Standard_v2 \
+    --public-ip-address ${PUBLIC_IP_NAME} \
+    --subnet ${agSubnetId}
+appgwId=$(az network application-gateway show -n ${APPGW_NAME} -g ${AG_RG_NAME} -o tsv --query "id")
+
+# Create AKS cluster
+AKS_CLUSTER_NAME=akscluster
+az aks create \
+    --resource-group ${AKS_RG_NAME} \
+    --name ${AKS_CLUSTER_NAME} \
+    --node-count 1 \
+    --enable-managed-identity \
+    --assign-identity ${clusterIdentityId} \
+    --assign-kubelet-identity ${kubeletIdentityId} \
+    --network-plugin azure \
+    --vnet-subnet-id ${aksSubnetId} \
+    --docker-bridge-address 172.17.0.1/16 \
+    --dns-service-ip 10.2.0.10 \
+    --service-cidr 10.2.0.0/24 \
+    --generate-ssh-keys
+az aks get-credentials -n ${AKS_CLUSTER_NAME} -g ${AKS_RG_NAME} --overwrite-existing
+
+# Role assignments required by AAD Pod Identity
+export SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+export RESOURCE_GROUP=${AKS_RG_NAME}
+export CLUSTER_NAME=${AKS_CLUSTER_NAME}
+export IDENTITY_RESOURCE_GROUP=${UAMI_RG_NAME}
+curl -s https://raw.githubusercontent.com/Azure/aad-pod-identity/master/hack/role-assignment.sh | bash
+
+# Deploy AAD Pod Identity
+kubectl apply -f https://raw.githubusercontent.com/Azure/aad-pod-identity/master/deploy/infra/deployment-rbac.yaml
+# For AKS clusters, deploy the MIC and AKS add-on exception by running -
+kubectl apply -f https://raw.githubusercontent.com/Azure/aad-pod-identity/master/deploy/infra/mic-exception.yaml
+
+# Assign roles to the uami used in the AGIC
+principalId=$(az identity show -n ${CLUSTER_IDENTITY_NAME} -g ${UAMI_RG_NAME} --query principalId -o tsv)
+az role assignment create --role Contributor --assignee ${principalId} --scope ${appgwId}
+az role assignment create --role Reader --assignee ${principalId} --scope $(az group show -n ${AG_RG_NAME} --query id -o tsv)
+
+# Grant azure ingress permission
+cat <<EOF | kubectl apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: ingress-azure-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: ingress-azure
+  namespace: default
+EOF
+
+# Install AGIC
+rm -f appgw-helm-config.yaml
+cat >> appgw-helm-config.yaml <<EOF
+# Based on https://raw.githubusercontent.com/Azure/application-gateway-kubernetes-ingress/master/docs/examples/sample-helm-config.yaml
+verbosityLevel: 3
+appgw:
+    subscriptionId: @SUB_ID@
+    resourceGroup: @APPGW_RG_NAME@
+    name: @APPGW_NAME@
+    usePrivateIP: false
+    shared: false
+kubernetes:
+    watchNamespace: @WATCH_NAMESPACE@
+armAuth:
+    type: aadPodIdentity
+    identityResourceID: @IDENTITY_RESOURCE_ID@
+    identityClientID: @IDENTITY_CLIENT_ID@
+rbac:
+    create: true
+EOF
+
+AGIC_WATCH_NAMESPACE='""'
+clusterIdentityClientId=$(az identity show -n ${CLUSTER_IDENTITY_NAME} -g ${UAMI_RG_NAME} -o tsv --query clientId)
+sed -i -e "s:@SUB_ID@:${SUBSCRIPTION_ID}:g" appgw-helm-config.yaml
+sed -i -e "s:@APPGW_RG_NAME@:${AG_RG_NAME}:g" appgw-helm-config.yaml
+sed -i -e "s:@APPGW_NAME@:${APPGW_NAME}:g" appgw-helm-config.yaml
+sed -i -e "s:@WATCH_NAMESPACE@:${AGIC_WATCH_NAMESPACE}:g" appgw-helm-config.yaml
+sed -i -e "s:@IDENTITY_RESOURCE_ID@:${clusterIdentityId}:g" appgw-helm-config.yaml
+sed -i -e "s:@IDENTITY_CLIENT_ID@:${clusterIdentityClientId}:g" appgw-helm-config.yaml
+
+azureAppgwIngressVersion="1.4.0"
+helm install ingress-azure \
+    -f appgw-helm-config.yaml \
+    application-gateway-kubernetes-ingress/ingress-azure \
+    --version ${azureAppgwIngressVersion}
 ```
 
 ## Create an ACR instance
@@ -40,6 +162,7 @@ az group create --name $RESOURCE_GROUP_NAME --location eastus
 Use the [az acr create](/cli/azure/acr#az_acr_create) command to create the ACR instance. The following example creates an ACR instance named *youruniqueacrname*. Make sure *youruniqueacrname* is unique within Azure.
 
 ```azurecli-interactive
+RESOURCE_GROUP_NAME=${AKS_RG_NAME}
 REGISTRY_NAME=youruniqueacrname
 az acr create --resource-group $RESOURCE_GROUP_NAME --name $REGISTRY_NAME --sku Basic --admin-enabled
 ```
@@ -49,7 +172,7 @@ After a short time, you should see a JSON output that contains:
 ```output
   "provisioningState": "Succeeded",
   "publicNetworkAccess": "Enabled",
-  "resourceGroup": "java-liberty-project",
+  "resourceGroup": "<aks-rg-name>",
 ```
 
 ### Connect to the ACR instance
@@ -66,39 +189,7 @@ docker login $LOGIN_SERVER -u $USER_NAME -p $PASSWORD
 
 You should see `Login Succeeded` at the end of command output if you have logged into the ACR instance successfully.
 
-## Create an AAG
-
-You will need to create an AAG which will be used as the load balancer for your application running on the AKS later. Run the following commands to deploy an AAG:
-
-```azurecli-interactive
-wget https://raw.githubusercontent.com/oracle/weblogic-azure/main/weblogic-azure-aks/src/main/bicep/modules/_azure-resoruces/_appgateway.bicep -O appgateway.bicep
-
-# If The following command exited with error "Failed to parse 'appgateway.bicep', please check whether it is a valid JSON format", pls run `az upgrade` to upgrade Azure CLI
-result=$(az deployment group create -n testDeployment -g $RESOURCE_GROUP_NAME --template-file appgateway.bicep --parameters location=eastus)
-APPGW_NAME=$(echo $result | jq -r '.properties.outputs.appGatewayName.value')
-APPGW_VNET_NAME=$(echo $result | jq -r '.properties.outputs.vnetName.value')
-APPGW_URL=$(echo $result | jq -r '.properties.outputs.appGatewayURL.value')
-```
-
-## Create an AKS cluster
-
-Use the [az aks create](/cli/azure/aks#az_aks_create) command to create an AKS cluster. The following example creates a cluster named *myAKSCluster* with one node. This will take several minutes to complete.
-
-```azurecli-interactive
-CLUSTER_NAME=myAKSCluster
-az aks create --resource-group $RESOURCE_GROUP_NAME --name $CLUSTER_NAME --node-count 1 --generate-ssh-keys --enable-managed-identity
-```
-
-After a few minutes, the command completes and returns JSON-formatted information about the cluster, including the following:
-
-```output
-  "nodeResourceGroup": "MC_java-liberty-project_myAKSCluster_eastus",
-  "privateFqdn": null,
-  "provisioningState": "Succeeded",
-  "resourceGroup": "java-liberty-project",
-```
-
-### Add a user node pool to the AKS cluster
+## Add a user node pool to the AKS cluster
 
 To run your application on a user node pool, you will need to add it beforehand. Run the following commands to add a user nood pool:
 
@@ -116,53 +207,6 @@ az aks nodepool add \
 az aks nodepool list -g $RESOURCE_GROUP_NAME --cluster-name $CLUSTER_NAME
 ```
 
-### Create network peers between the AAG and AKS cluster
-
-To successfully communicate between the AAG and AKS cluster, we will need to create network peers between them. Run the following commands to peer two virtual networks:
-
-```azurecli-interactive
-aksMCRGName=$(az aks show -n $CLUSTER_NAME -g $RESOURCE_GROUP_NAME -o tsv --query "nodeResourceGroup")
-aksNetWorkId=$(az resource list -g ${aksMCRGName} --resource-type Microsoft.Network/virtualNetworks -o tsv --query '[*].id')
-aksNetworkName=$(az resource list -g ${aksMCRGName} --resource-type Microsoft.Network/virtualNetworks -o tsv --query '[*].name')
-az network vnet peering create --name aks-appgw-peer --remote-vnet ${aksNetWorkId} --resource-group ${RESOURCE_GROUP_NAME} --vnet-name ${APPGW_VNET_NAME} --allow-vnet-access
-
-appgwNetworkId=$(az resource list -g ${RESOURCE_GROUP_NAME} --name ${APPGW_VNET_NAME} -o tsv --query '[*].id')
-az network vnet peering create --name aks-appgw-peer --remote-vnet ${appgwNetworkId} --resource-group ${aksMCRGName} --vnet-name ${aksNetworkName} --allow-vnet-access
-
-# Associate the route table to Application Gateway's subnet
-routeTableId=$(az network route-table list -g $aksMCRGName --query "[].id | [0]" -o tsv)
-appGatewaySubnetId=$(az network application-gateway show -n $APPGW_NAME -g $RESOURCE_GROUP_NAME -o tsv --query "gatewayIpConfigurations[0].subnet.id")
-az network vnet subnet update --ids $appGatewaySubnetId --route-table $routeTableId
-```
-
-### Connect to the AKS cluster
-
-To manage a Kubernetes cluster, you use [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/), the Kubernetes command-line client. If you use Azure Cloud Shell, `kubectl` is already installed. To install `kubectl` locally, use the [az aks install-cli](/cli/azure/aks#az_aks_install_cli) command:
-
-```azurecli-interactive
-az aks install-cli
-```
-
-To configure `kubectl` to connect to your Kubernetes cluster, use the [az aks get-credentials](/cli/azure/aks#az_aks_get_credentials) command. This command downloads credentials and configures the Kubernetes CLI to use them.
-
-```azurecli-interactive
-az aks get-credentials --resource-group $RESOURCE_GROUP_NAME --name $CLUSTER_NAME --overwrite-existing
-```
-
-To verify the connection to your cluster, use the [kubectl get]( https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#get) command to return a list of the cluster nodes.
-
-```azurecli-interactive
-kubectl get nodes
-```
-
-The following example output shows the single node created in the previous steps. Make sure that the status of the node is *Ready*:
-
-```output
-NAME                                STATUS   ROLES   AGE     VERSION
-aks-labelnp-xxxxxxxx-yyyyyyyyyy     Ready    agent   76s     v1.20.9
-aks-nodepool1-xxxxxxxx-yyyyyyyyyy   Ready    agent   76s     v1.20.9
-```
-
 ## Install Open Liberty Operator
 
 After creating and connecting to the cluster, install the [Open Liberty Operator](https://github.com/OpenLiberty/open-liberty-operator/tree/master/deploy/releases/0.7.1) by running the following commands.
@@ -176,60 +220,13 @@ kubectl apply -f https://raw.githubusercontent.com/OpenLiberty/open-liberty-oper
 
 # Install cluster-level role-based access
 curl -L https://raw.githubusercontent.com/OpenLiberty/open-liberty-operator/master/deploy/releases/0.7.1/openliberty-app-cluster-rbac.yaml \
-    | sed -e "s/OPEN_LIBERTY_OPERATOR_NAMESPACE/${OPERATOR_NAMESPACE}/" \
-    | kubectl apply -f -
+      | sed -e "s/OPEN_LIBERTY_OPERATOR_NAMESPACE/${OPERATOR_NAMESPACE}/" \
+      | kubectl apply -f -
 
-# Install the operator on the user node pool
-wget https://raw.githubusercontent.com/OpenLiberty/open-liberty-operator/master/deploy/releases/0.7.1/openliberty-app-operator.yaml -O openliberty-app-operator.yaml
-cat <<EOF >>openliberty-app-operator.yaml
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: ${NODE_LABEL_KEY}
-                operator: In
-                values:
-                - ${NODE_LABEL_VALUE}
-EOF
-
-cat openliberty-app-operator.yaml \
-    | sed -e "s/OPEN_LIBERTY_WATCH_NAMESPACE/${WATCH_NAMESPACE}/" \
-    | kubectl apply -n ${OPERATOR_NAMESPACE} -f -
-```
-
-## Install AAG Ingress Controller
-
-```azurecli-interactive
-# If you haven't installed Helm, pls install it first
-# Install Helm from `apt`, more details pls see https://helm.sh/docs/intro/install/
-curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -
-sudo apt-get install apt-transport-https --yes
-echo "deb https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
-sudo apt-get update
-sudo apt-get install helm
-
-# Add the application-gateway-kubernetes-ingress helm repo and perform a helm update
-helm repo add application-gateway-kubernetes-ingress https://appgwingress.blob.core.windows.net/ingress-azure-helm-package/
-helm repo update
-
-kubectl apply -f https://raw.githubusercontent.com/oracle/weblogic-azure/main/weblogic-azure-aks/src/main/arm/scripts/appgw-ingress-clusterAdmin-roleBinding.yaml
-
-subID=<your-azure-subscription-id>
-spBase64String=$(az ad sp create-for-rbac --sdk-auth | base64 -w0)
-azureAppgwIngressVersion="1.4.0"
-
-wget https://raw.githubusercontent.com/oracle/weblogic-azure/main/weblogic-azure-aks/src/main/arm/scripts/appgw-helm-config.yaml.template -O appgw-helm-config.yaml
-sed -i -e "s:@SUB_ID@:${subID}:g" appgw-helm-config.yaml
-sed -i -e "s:@APPGW_RG_NAME@:${RESOURCE_GROUP_NAME}:g" appgw-helm-config.yaml
-sed -i -e "s:@APPGW_NAME@:${APPGW_NAME}:g" appgw-helm-config.yaml
-sed -i -e "s:@WATCH_NAMESPACE@:${WATCH_NAMESPACE}:g" appgw-helm-config.yaml
-sed -i -e "s:@SP_ENCODING_CREDENTIALS@:${spBase64String}:g" appgw-helm-config.yaml
-
-helm install ingress-azure \
-    -f appgw-helm-config.yaml \
-    application-gateway-kubernetes-ingress/ingress-azure \
-    --version ${azureAppgwIngressVersion}
+# Install the operator
+curl -L https://raw.githubusercontent.com/OpenLiberty/open-liberty-operator/master/deploy/releases/0.7.1/openliberty-app-operator.yaml \
+      | sed -e "s/OPEN_LIBERTY_WATCH_NAMESPACE/${WATCH_NAMESPACE}/" \
+      | kubectl apply -n ${OPERATOR_NAMESPACE} -f -
 ```
 
 ## Build application image
@@ -237,7 +234,7 @@ helm install ingress-azure \
 To deploy and run your Liberty application on the AKS cluster, containerize your application as a Docker image using [Open Liberty container images](https://github.com/OpenLiberty/ci.docker) or [WebSphere Liberty container images](https://github.com/WASdev/ci.docker).
 
 1. Clone the sample code for this guide. The sample is on [GitHub](https://github.com/Azure-Samples/open-liberty-on-aks).
-1. Locate to your local clone and run `git checkout lg-sample` to checkout branch `lg-sample`.
+1. Locate to your local clone and run `git checkout lg-sample-agic-helm-identity` to checkout branch `lg-sample-agic-helm-identity`.
 1. Run `cd javaee-app-lg-sample` to change directory to `javaee-app-lg-sample` of your local clone.
 1. Run `mvn clean package` to package the application.
 1. Run `mvn liberty:dev` to test the application. You should see `The defaultServer server is ready to run a smarter planet.` in the command output if successful. Use `CTRL-C` to stop the application.
@@ -359,14 +356,11 @@ Open a web browser to the external IP address of your Ingress (`20.62.178.13` fo
 
 ## Clean up the resources
 
-To avoid Azure charges, you should clean up unnecessary resources.  When the cluster is no longer needed, use the [az group delete](/cli/azure/group#az_group_delete) command to remove the resource group, container service, container registry, and all related resources.
+To avoid Azure charges, you should clean up unnecessary resources. When the cluster is no longer needed, use the [az group delete](/cli/azure/group#az_group_delete) command to remove the resource group, container service, container registry, and all related resources.
 
 ```azurecli-interactive
-az group delete --name $RESOURCE_GROUP_NAME --yes --no-wait
-```
-
-Delete the service principal used for AAG Ingress Controller:
-
-```azurecli-interactive
-az ad sp delete --id $(echo $spBase64String | base64 -d | jq -r '.clientId')
+az group delete --name ${AKS_RG_NAME} --yes --no-wait
+az group delete --name ${AG_RG_NAME} --yes --no-wait
+az group delete --name ${VNET_RG_NAME} --yes --no-wait
+az group delete --name ${UAMI_RG_NAME} --yes --no-wait
 ```
