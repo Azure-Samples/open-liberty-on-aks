@@ -6,23 +6,11 @@ on:
       acrName: 
         description: "ACR name"
         required: true
-      appDeploymentYamlEncoded:
-        description: "Encoded deployment file"
-        required: true
-      appDockerfileEncoded:
-        description: "Encoded Dockerfile"
-        required: true
-      appImage:
-        description: "App image"
-        required: true
-      appName:
-        description: "Open Liberty App name"
-        required: true
       appNamespace:
         description: "Open Liberty App namespace"
         required: true
-      appServerXmlEncoded:
-        description: "Encoded Server.xml"
+      appNamespacePullSecret:
+        description: "Open Liberty App namespace pull secret"
         required: true
       clusterName: 
         description: "AKS cluster name"
@@ -61,9 +49,6 @@ jobs:
               uses: actions/setup-java@v1
               with:
                 java-version: 1.8
-            - name: Install xmlstarlet
-              run: |
-                sudo apt-get install -y xmlstarlet
             - name: Install Docker
               run: |
                 # Install docker
@@ -85,151 +70,127 @@ jobs:
                 creds: ${{ env.azureCredentials }}
             - name: Checkout open-liberty-on-aks
               uses: actions/checkout@v2
+            - name: Setup environment variables
+              run: |
+                echo "LOGIN_SERVER"=${{ github.event.inputs.acrName }}.azurecr.io >> $GITHUB_ENV
+                echo "REGISTRY_NAME"=${{ github.event.inputs.acrName }} >> $GITHUB_ENV
+                echo "USER_NAME"=${{ github.event.inputs.acrName }} >> $GITHUB_ENV
+                echo "PASSWORD"=${{ env.acrPassword }} >> $GITHUB_ENV
+                echo "DB_SERVER_NAME"=${{ env.dbServerName }} >> $GITHUB_ENV
+                echo "DB_PORT_NUMBER"=5432 >> $GITHUB_ENV
+                echo "DB_TYPE"=postgres >> $GITHUB_ENV
+                echo "DB_USER"=${{ env.dbAdminUser }} >> $GITHUB_ENV
+                echo "DB_PASSWORD"=${{ env.dbPassword }} >> $GITHUB_ENV
+                echo "NAMESPACE"=${{ github.event.inputs.appNamespace }} >> $GITHUB_ENV
+                echo "PULL_SECRET"=${{ github.event.inputs.appNamespacePullSecret }} >> $GITHUB_ENV
             - name: Build the app
               run: |
                 echo "build the Cafe web app"
-                cd javaee-app-db-using-actions
-                mvn clean install -Ddb.server.name=${{ env.dbServerName }} -Ddb.port.number=5432 -Ddb.name=postgres -Ddb.user=${{ env.dbAdminUser }} -Ddb.password=${{ env.dbPassword }}
-            - name: Download PostgreSQL driver
-              run: |
-                cd javaee-app-db-using-actions/target
-                wget -O postgresql-42.2.4.jar https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.4/postgresql-42.2.4.jar
-            - name: Generate Server.xml
-              run: |
-                cd javaee-app-db-using-actions/target
-                echo ${{ github.event.inputs.appServerXmlEncoded }} | base64 --decode >> server.xml
-                xmlstarlet edit --inplace \
-                    -d '/server/featureManager/feature' \
-                    -d '/server/featureManager/feature[2]' \
-                    -s '//featureManager' -t elem -n "feature" -v "cdi-2.0" \
-                    -s '//featureManager' -t elem -n "feature" -v "jaxb-2.2" \
-                    -s '//featureManager' -t elem -n "feature" -v "jsf-2.3" \
-                    -s '//featureManager' -t elem -n "feature" -v "jaxrs-2.1" \
-                    -s '//featureManager' -t elem -n "feature" -v "ejbLite-3.2" \
-                    -s '//featureManager' -t elem -n "feature" -v "jpa-2.2" \
-                    -s '//server' -t elem -n "dataSource" \
-                    -s '//dataSource' -t attr -n "id" -v "JavaEECafeDB" \
-                    -s '//dataSource' -t attr -n "jndiName" -v "jdbc/JavaEECafeDB" \
-                    -s '//server/dataSource[last()]' -t elem -n "jdbcDriver" \
-                    -s '//jdbcDriver' -t attr -n "libraryRef" -v "driver-library" \
-                    -s '//server/dataSource[last()]' -t elem -n "properties.postgresql" \
-                    -s '//properties.postgresql' -t attr -n "serverName" -v "\${db.server.name}" \
-                    -s '//properties.postgresql' -t attr -n "portNumber" -v "\${db.port.number}" \
-                    -s '//properties.postgresql' -t attr -n "databaseName" -v "\${db.name}" \
-                    -s '//properties.postgresql' -t attr -n "user" -v "\${db.user}" \
-                    -s '//properties.postgresql' -t attr -n "password" -v "\${db.password}" \
-                    -s '//properties.postgresql' -t attr -n "ssl" -v "\${db.ssl}" \
-                    -s '//server' -t elem -n "variable" \
-                    -s '//variable' -t attr -n "name" -v "db.ssl" \
-                    -s '//variable' -t attr -n "defaultValue" -v "true" \
-                    -s '//server' -t elem -n "library" \
-                    -s '//library' -t attr -n "id" -v "driver-library" \
-                    -s '//server/library[last()]' -t elem -n "fileset" \
-                    -s '//fileset' -t attr -n "dir" -v "\${shared.resource.dir}" \
-                    -s '//fileset' -t attr -n "includes" -v "*.jar" \
-                    -u '/server/webApplication/@location' -v "\${server.config.dir}/apps/javaee-cafe.war" \
-                    server.xml
+                cd javaee-app-db-using-actions/postgres
+                
+                export LOGIN_SERVER=$LOGIN_SERVER
+                export REGISTRY_NAME=$REGISTRY_NAME
+                export USER_NAME=$USER_NAME
+                export PASSWORD=$PASSWORD
+                export DB_SERVER_NAME=$DB_SERVER_NAME
+                export DB_PORT_NUMBER=$DB_PORT_NUMBER
+                export DB_TYPE=$DB_TYPE
+                export DB_USER=$DB_USER
+                export DB_PASSWORD=$DB_PASSWORD
+                export NAMESPACE=$NAMESPACE
+                export PULL_SECRET=$PULL_SECRET
+
+                mvn clean install
             - name: Archive server.xml
               uses: actions/upload-artifact@v1
               with:
                 name: archivefiles
-                path: javaee-app-db-using-actions/target/server.xml
-            - name: Generate deployment file
-              run: |
-                cd javaee-app-db-using-actions/target
-                echo ${{ github.event.inputs.appDeploymentYamlEncoded }} | base64 --decode >> openlibertyapplication.yaml
-                cat <<EOT >> openlibertyapplication.yaml
-                  env:
-                  - name: DB_SERVER_NAME
-                    valueFrom:
-                      secretKeyRef:
-                        name: db-secret-postgres
-                        key: db.server.name
-                  - name: DB_PORT_NUMBER
-                    valueFrom:
-                      secretKeyRef:
-                        name: db-secret-postgres
-                        key: db.port.number
-                  - name: DB_NAME
-                    valueFrom:
-                      secretKeyRef:
-                        name: db-secret-postgres
-                        key: db.name
-                  - name: DB_USER
-                    valueFrom:
-                      secretKeyRef:
-                        name: db-secret-postgres
-                        key: db.user
-                  - name: DB_PASSWORD
-                    valueFrom:
-                      secretKeyRef:
-                        name: db-secret-postgres
-                        key: db.password
-                EOT
-            - name: Generate Dockerfile
-              run: |
-                cd javaee-app-db-using-actions/target
-                echo ${{ github.event.inputs.appDockerfileEncoded }} | base64 --decode >> Dockerfile
-                # Remove current app configuration
-                sed -i "/${{ github.event.inputs.appName }}/d" Dockerfile
-                lineNumber=$(grep -n 'COPY' Dockerfile | grep -Eo '^[^:]+')
-                # Add postgresql driver
-                sed -i "$lineNumber a COPY --chown=1001:0 postgresql-42.2.4.jar \/opt\/ol\/wlp\/usr\/shared\/resources\/" Dockerfile
-                # Add built Cafe web app
-                sed -i "$lineNumber a COPY --chown=1001:0 javaee-cafe.war \/config\/apps\/" Dockerfile
+                path: javaee-app-db-using-actions/postgres/target/liberty/wlp/usr/servers/defaultServer/server.xml
             - name: Archive Dockerfile
               uses: actions/upload-artifact@v1
               with:
                 name: archivefiles
-                path: javaee-app-db-using-actions/target/Dockerfile
+                path: javaee-app-db-using-actions/postgres/target/Dockerfile
             - name: Build image
               run: |
-                cd javaee-app-db-using-actions/target
-                docker build -t javaee-cafe-connect-db-postgres:1.0.0 --pull --file=Dockerfile .
+                cd javaee-app-db-using-actions/postgres
+
+                # Fetch maven artifactId as image name, maven build version as image version
+                export IMAGE_NAME=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.artifactId}' --non-recursive exec:exec)
+                export IMAGE_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+                
+                echo $IMAGE_NAME $IMAGE_VERSION
+                echo "IMAGE_NAME"=$IMAGE_NAME >> $GITHUB_ENV
+                echo "IMAGE_VERSION"=$IMAGE_VERSION >> $GITHUB_ENV
+
+                
+                cd target
+
+                # If you are running with Open Liberty
+                docker build -t ${IMAGE_NAME}:${IMAGE_VERSION} --pull --file=Dockerfile .
             - name: Push image
               run: |
-                Container_Registry_URL=${{ github.event.inputs.acrName }}.azurecr.io
-                IFS=':' read -a arr <<< ${{ github.event.inputs.appImage }}
-                Image_Name=${arr[0]}
-                echo $Image_name
-                docker tag javaee-cafe-connect-db-postgres:1.0.0 ${Container_Registry_URL}/${Image_Name}:${{ github.run_id }}${{ github.run_number }}
-                docker login -u ${{ github.event.inputs.acrName }} -p ${{ env.acrPassword }} ${Container_Registry_URL}
-                docker push ${Container_Registry_URL}/${Image_Name}:${{ github.run_id }}${{ github.run_number }}
-            - name: Create DB Secret file
-              run: |
-                cd javaee-app-db-using-actions/src/main/aks
-                export NAMESPACE=${{ github.event.inputs.appNamespace }}
-                export DB_SERVER_NAME=${{ env.dbServerName }}
-                export DB_PORT_NUMBER=5432
-                export DB_NAME=postgres
-                export DB_USER=${{ env.dbAdminUser }}
-                export DB_PASSWORD=${{ env.dbPassword }}
-
-                envsubst < db-secret.yaml > ../../../target/db-secret-sub.yaml
-            - name: Archive db-secret-sub.yaml
+                docker tag ${IMAGE_NAME}:${IMAGE_VERSION} ${LOGIN_SERVER}/${IMAGE_NAME}:${{ github.run_id }}${{ github.run_number }}
+                docker login -u ${{ github.event.inputs.acrName }} -p ${{ env.acrPassword }} ${LOGIN_SERVER}
+                docker push ${LOGIN_SERVER}/${IMAGE_NAME}:${{ github.run_id }}${{ github.run_number }}
+            - name: Archive db-secret.yaml
               uses: actions/upload-artifact@v1
               with:
                 name: archivefiles
-                path: javaee-app-db-using-actions/target/db-secret-sub.yaml
+                path: javaee-app-db-using-actions/postgres/target/db-secret.yaml
             - name: Update image path and place in values
               run: |
-                cd javaee-app-db-using-actions/target
-                Container_Registry_URL=${{ github.event.inputs.acrName }}.azurecr.io
-                IFS=':' read -a arr <<< ${{ github.event.inputs.appImage }}
-                Image_Name=${arr[0]}
+                cd javaee-app-db-using-actions/postgres/target
+
                 sed -i "/applicationImage/d" openlibertyapplication.yaml
                 lineNumber=$(grep -n 'replicas' openlibertyapplication.yaml | grep -Eo '^[^:]+')
-                sed -i "$lineNumber a \  applicationImage: ${Container_Registry_URL}/${Image_Name}:${{ github.run_id }}${{ github.run_number }}" openlibertyapplication.yaml
+                sed -i "$lineNumber a \  applicationImage: ${LOGIN_SERVER}/${IMAGE_NAME}:${{ github.run_id }}${{ github.run_number }}" openlibertyapplication.yaml
             - name: Archive openlibertyapplication.yaml
               uses: actions/upload-artifact@v1
               with:
                 name: archivefiles
-                path: javaee-app-db-using-actions/target/openlibertyapplication.yaml
+                path: javaee-app-db-using-actions/postgres/target/openlibertyapplication.yaml
             - name: Connect to AKS cluster
               run: |
-                cd javaee-app-db-using-actions/target
+                cd javaee-app-db-using-actions/postgres/target
                 az aks get-credentials --resource-group ${{ github.event.inputs.clusterRGName }} --name ${{ github.event.inputs.clusterName }}
-                cat db-secret-sub.yaml
-                kubectl apply -f db-secret-sub.yaml
+                cat db-secret.yaml
+                kubectl apply -f db-secret.yaml
                 cat openlibertyapplication.yaml
+
+                timestampBeforeDeployment=$(date +%s)
+                echo "timestampBeforeDeployment=${timestampBeforeDeployment}" >> $GITHUB_ENV
+                sleep 5
+
                 kubectl apply -f openlibertyapplication.yaml
+            - name: Verify pods are restarted
+              run: |
+                # interval of checking pod status.
+                checkPodStatusInterval=20
+                # max attempt to check pod status.
+                checkPodStatusMaxAttempts=30
+                # other variables
+                updatedPodNum=0
+                attempt=0
+                appReplicas=3
+                echo $timestampBeforeDeployment $appReplicas $checkPodStatusMaxAttempts $checkPodStatusInterval
+                while [[ ${updatedPodNum} -lt ${appReplicas} ]] && [[ $attempt -le ${checkPodStatusMaxAttempts} ]]; do
+                    echo "attempts ${attempt}"
+                    ret=$(kubectl get pods -n ${NAMESPACE} -o json | jq '.items[] | .metadata.creationTimestamp' | tr -d "\"")
+                    counter=0
+                    for item in $ret; do
+                        podCreateTimeStamp=$(date -u -d "${item}" +"%s")
+                        echo "pod create time: $podCreateTimeStamp, base time: ${timestampBeforeDeployment}"
+                        if [[ ${podCreateTimeStamp} -gt ${timestampBeforeDeployment} ]]; then
+                            counter=$((counter + 1))
+                        fi
+                    done
+                    updatedPodNum=$counter
+                    echo "Number of new pod: ${updatedPodNum}"
+                    attempt=$((attempt + 1))
+                    sleep ${checkPodStatusInterval}
+                done
+                if [[ ${attempt} -gt ${checkPodStatusMaxAttempts} ]]; then
+                    echo "Failed to restart all pods. "
+                    exit 1
+                fi
