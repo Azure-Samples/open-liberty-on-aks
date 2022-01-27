@@ -6,7 +6,6 @@ spec:
   replicas: ${param.replicas}
   applicationImage: ${param.login.server}/${project.artifactId}:${project.version}
   pullPolicy: Always
-  pullSecret: ${param.pull.secret.name}
   service:
     type: LoadBalancer
     targetPort: 9080
