@@ -9,9 +9,6 @@ on:
       appNamespace:
         description: "Open Liberty App namespace"
         required: true
-      appNamespacePullSecret:
-        description: "Open Liberty App namespace pull secret"
-        required: true
       clusterName: 
         description: "AKS cluster name"
         required: true
@@ -82,7 +79,6 @@ jobs:
                 echo "DB_USER"=${{ env.dbAdminUser }} >> $GITHUB_ENV
                 echo "DB_PASSWORD"=${{ env.dbPassword }} >> $GITHUB_ENV
                 echo "NAMESPACE"=${{ github.event.inputs.appNamespace }} >> $GITHUB_ENV
-                echo "PULL_SECRET"=${{ github.event.inputs.appNamespacePullSecret }} >> $GITHUB_ENV
             - name: Build the app
               run: |
                 echo "build the Cafe web app"
@@ -98,7 +94,6 @@ jobs:
                 export DB_USER=$DB_USER
                 export DB_PASSWORD=$DB_PASSWORD
                 export NAMESPACE=$NAMESPACE
-                export PULL_SECRET=$PULL_SECRET
 
                 mvn clean install
             - name: Archive server.xml

@@ -37,7 +37,6 @@
     <param.db.name>${env.DB_NAME}</param.db.name>
     <param.db.user>${env.DB_USER}</param.db.user>
     <param.db.password>${env.DB_PASSWORD}</param.db.password>
-    <param.pull.secret.name>${env.PULL_SECRET}</param.pull.secret.name>
     <param.namespace>${env.NAMESPACE}</param.namespace>
     <param.replicas>3</param.replicas>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
