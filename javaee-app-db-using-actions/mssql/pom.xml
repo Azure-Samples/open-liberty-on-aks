@@ -19,7 +19,7 @@
     <db.user></db.user>
     <db.password></db.password>
     <failOnMissingWebXml>false</failOnMissingWebXml>
-    <javaee.api.version>8.0</javaee.api.version>
+    <jakartaee.api.version>8.0.0</jakartaee.api.version>
     <liberty.bootstrap.artifactId>${project.artifactId}</liberty.bootstrap.artifactId>
     <liberty.bootstrap.db.server.name>${db.server.name}</liberty.bootstrap.db.server.name>
     <liberty.bootstrap.db.port.number>${db.port.number}</liberty.bootstrap.db.port.number>
@@ -45,9 +45,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-api</artifactId>
-      <version>${javaee.api.version}</version>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-api</artifactId>
+      <version>${jakartaee.api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
