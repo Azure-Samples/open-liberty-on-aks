@@ -18,11 +18,11 @@ urlFragment: "open-liberty-on-aks"
 
 [WebSphere Liberty](https://www.ibm.com/cloud/websphere-liberty) architecture shares the same code base as the open sourced Open Liberty server runtime, which provides additional benefits such as low-cost experimentation, customization and seamless migration from open source to production.
 
-This repository contains samples projects for deploying Java applications with Open Liberty/WebSphere Liberty on an Azure Kubernetes Service cluster.
+This repository contains sample projects for deploying Java applications with Open Liberty/WebSphere Liberty on an Azure Kubernetes Service cluster.
 These sample projects show how to use various features in Open Liberty/WebSphere Liberty and how to integrate with different Azure services.
 Below table shows the list of samples available in this repository.
 
 | Sample                           | Description                                | Guide                            |
 |----------------------------------|--------------------------------------------|----------------------------------|
-| [`javaee-app`](javaee-app) | Deploy a simple Java application with Open Liberty/WebSphere Liberty on an AKS cluster. | [howto-guide](https://docs.microsoft.com/azure/aks/howto-deploy-java-liberty-app) |
-| [`javaee-app-jcache`](javaee-app-jcache) | Deploy a simple Java application with Open Liberty/WebSphere Liberty on an AKS cluster, whose session cache is backed by an Azure Cache for Redis instance. | TODO |
+| [`java-app`](java-app) | Deploy a simple Java application with Open Liberty/WebSphere Liberty on an AKS cluster. | [howto-guide](https://docs.microsoft.com/azure/aks/howto-deploy-java-liberty-app) |
+| [`java-app-jcache`](java-app-jcache) | Deploy a simple Java application with Open Liberty/WebSphere Liberty on an AKS cluster, whose session cache is backed by an Azure Cache for Redis instance. | TODO |
