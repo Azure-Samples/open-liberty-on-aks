@@ -1,4 +1,4 @@
-# DisableDockerDetector liberty-maven-plugin does not support docker buildx-build. See https://github.com/OpenLiberty/ci.maven/issues/1589
+# DisableDockerDetector "liberty-maven-plugin does not support docker buildx-build. See https://github.com/OpenLiberty/ci.maven/issues/1589"
 # WebSphere Liberty base image
 FROM ibmcom/websphere-liberty:full-java8-openj9-ubi
 
