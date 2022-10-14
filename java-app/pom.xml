@@ -41,6 +41,7 @@
     <param.replicas>3</param.replicas>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven-war-plugin.version>3.3.1</maven-war-plugin.version>
   </properties>
 
   <dependencies>
@@ -172,6 +173,11 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>${maven-war-plugin.version}</version>
           </plugin>
         </plugins>
       </build>
