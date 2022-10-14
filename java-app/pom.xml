@@ -19,7 +19,7 @@
     <db.user></db.user>
     <db.password></db.password>
     <failOnMissingWebXml>false</failOnMissingWebXml>
-    <jakartaee.api.version>8.0.0</jakartaee.api.version>
+    <jakartaee.api.version>9.1.0</jakartaee.api.version>
     <liberty.bootstrap.artifactId>${project.artifactId}</liberty.bootstrap.artifactId>
     <liberty.bootstrap.db.server.name>${db.server.name}</liberty.bootstrap.db.server.name>
     <liberty.bootstrap.db.port.number>${db.port.number}</liberty.bootstrap.db.port.number>
@@ -41,6 +41,9 @@
     <param.replicas>3</param.replicas>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <jaxb-api.version>2.4.0-b180830.0359</jaxb-api.version>
+    <mssql-jdbc.version>11.2.1.jre8</mssql-jdbc.version>
+    <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
     <maven-war-plugin.version>3.3.1</maven-war-plugin.version>
   </properties>
 
@@ -54,13 +57,13 @@
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
-      <version>2.3.1</version>
+      <version>${jaxb-api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>mssql-jdbc</artifactId>
-      <version>8.2.2.jre8</version>
+      <version>${mssql-jdbc.version}</version>
       <type>jar</type>
     </dependency>
   </dependencies>
@@ -159,7 +162,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.1.2</version>
+            <version>${maven-dependency-plugin.version}</version>
             <executions>
               <execution>
                 <id>copy-jdbc-driver</id>
