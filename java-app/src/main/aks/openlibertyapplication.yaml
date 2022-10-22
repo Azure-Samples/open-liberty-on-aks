@@ -2,7 +2,6 @@ apiVersion: apps.openliberty.io/v1beta2
 kind: OpenLibertyApplication
 metadata:
   name: ${project.artifactId}-cluster
-  namespace: ${param.namespace}
 spec:
   replicas: ${param.replicas}
   applicationImage: ${param.login.server}/${project.artifactId}:${project.version}
