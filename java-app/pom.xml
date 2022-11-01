@@ -8,21 +8,12 @@
 	<packaging>war</packaging>
 	<name>${project.artifactId}</name>
 	<description>This is the basic Java EE application used in the demo.
-  It is a simple CRUD application. It uses Maven and Java EE 8 (JAX-RS, EJB, CDI, JSON-B, JSF, Bean Validation).
-  </description>
+		It is a simple CRUD application. It uses Maven and Java EE 8 (JAX-RS, EJB, CDI, JSON-B, JSF, Bean Validation).
+	</description>
 
 	<properties>
-		<db.server.name></db.server.name>
-		<db.name></db.name>
-		<db.user></db.user>
-		<db.password></db.password>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 		<jakartaee.api.version>8.0.0</jakartaee.api.version>
-		<liberty.bootstrap.artifactId>${project.artifactId}</liberty.bootstrap.artifactId>
-		<liberty.bootstrap.db.server.name>${db.server.name}</liberty.bootstrap.db.server.name>
-		<liberty.bootstrap.db.name>${db.name}</liberty.bootstrap.db.name>
-		<liberty.bootstrap.db.user>${db.user}</liberty.bootstrap.db.user>
-		<liberty.bootstrap.db.password>${db.password}</liberty.bootstrap.db.password>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<param.login.server>${env.LOGIN_SERVER}</param.login.server>
@@ -106,7 +97,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- Enable liberty-maven-plugin -->
 			<plugin>
 				<groupId>io.openliberty.tools</groupId>
@@ -124,12 +115,6 @@
 						<configuration>
 							<libertyRuntimeVersion>[20.0.0.1,)</libertyRuntimeVersion>
 							<outputDirectory>${project.build.directory}/wlp-package</outputDirectory>
-							<bootstrapProperties>
-								<db.server.name>${db.server.name}</db.server.name>
-								<db.name>${db.name}</db.name>
-								<db.user>${db.user}</db.user>
-								<db.password>${db.password}</db.password>
-							</bootstrapProperties>
 						</configuration>
 					</execution>
 				</executions>

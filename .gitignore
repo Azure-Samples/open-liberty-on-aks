@@ -18,3 +18,5 @@ buildNumber.properties
 *.key
 *.cer
 *.p12
+
+java-app/.idea/
