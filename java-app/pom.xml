@@ -4,7 +4,7 @@
 
 	<artifactId>javaee-cafe</artifactId>
 	<groupId>javaee-cafe</groupId>
-	<version>1.0.25</version>
+	<version>v1</version>
 	<packaging>war</packaging>
 	<name>${project.artifactId}</name>
 	<description>This is the basic Java EE application used in the demo.
