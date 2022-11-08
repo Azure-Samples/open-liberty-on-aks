@@ -4,7 +4,7 @@
 
 	<artifactId>javaee-cafe</artifactId>
 	<groupId>javaee-cafe</groupId>
-	<version>1.0.25</version>
+	<version>v1</version>
 	<packaging>war</packaging>
 	<name>${project.artifactId}</name>
 	<description>This is the basic Java EE application used in the demo.
@@ -24,6 +24,7 @@
 		<param.db.name>${env.DB_NAME}</param.db.name>
 		<param.db.user>${env.DB_USER}</param.db.user>
 		<param.db.password>${env.DB_PASSWORD}</param.db.password>
+		<param.ingress.tls.secret>${env.INGRESS_TLS_SECRET}</param.ingress.tls.secret>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven-war-plugin.version>3.3.1</maven-war-plugin.version>
