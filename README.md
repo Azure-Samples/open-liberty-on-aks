@@ -25,4 +25,3 @@ Below table shows the list of samples available in this repository.
 | Sample                           | Description                                | Guide                            |
 |----------------------------------|--------------------------------------------|----------------------------------|
 | [`java-app`](java-app) | Deploy a simple Java application with Open Liberty/WebSphere Liberty on an AKS cluster. | [howto-guide](https://docs.microsoft.com/azure/aks/howto-deploy-java-liberty-app) |
-| [`java-app-jcache`](java-app-jcache) | Deploy a simple Java application with Open Liberty/WebSphere Liberty on an AKS cluster, whose session cache is backed by an Azure Cache for Redis instance. | TODO |
