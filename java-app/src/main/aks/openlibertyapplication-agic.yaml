@@ -4,7 +4,7 @@ metadata:
   name: javaee-cafe-cluster-agic
 spec:
   replicas: 3
-  applicationImage: ${param.login.server}/javaee-cafe:${project.version}
+  applicationImage: ${param.login.server}/javaee-cafe:v1
   pullPolicy: Always
   service:
     type: ClusterIP
