@@ -4,7 +4,7 @@
 
 	<artifactId>javaee-cafe</artifactId>
 	<groupId>javaee-cafe</groupId>
-	<version>v1</version>
+	<version>1.0.3-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>${project.artifactId}</name>
 	<description>This is the basic Java EE application used in the demo.
@@ -114,7 +114,7 @@
 							<goal>deploy</goal>
 						</goals>
 						<configuration>
-							<libertyRuntimeVersion>[20.0.0.1,)</libertyRuntimeVersion>
+							<libertyRuntimeVersion>20.0.0.1</libertyRuntimeVersion>
 							<outputDirectory>${project.build.directory}/wlp-package</outputDirectory>
 						</configuration>
 					</execution>
