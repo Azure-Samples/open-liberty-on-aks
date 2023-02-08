@@ -13,6 +13,8 @@
     <!-- Define http & https endpoints -->
     <httpEndpoint id="defaultHttpEndpoint" host="*"
         httpPort="9080" httpsPort="9443" />
+    <tcpOptions soReuseAddr="true" />
+    
 
     <library id="jCacheVendorLib">
       <fileset dir="${shared.resource.dir}" includes="*"/>
