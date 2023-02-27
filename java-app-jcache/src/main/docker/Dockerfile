@@ -31,7 +31,7 @@ COPY --chown=1001:0 ${project.artifactId}/WEB-INF/lib/reactor-core-3.4.18.jar /o
 COPY --chown=1001:0 ${project.artifactId}/WEB-INF/lib/rxjava-3.1.5.jar /opt/ol/wlp/usr/shared/resources/
 COPY --chown=1001:0 ${project.artifactId}/WEB-INF/lib/slf4j-api-1.7.36.jar /opt/ol/wlp/usr/shared/resources/
 COPY --chown=1001:0 ${project.artifactId}/WEB-INF/lib/slf4j-simple-1.7.36.jar /opt/ol/wlp/usr/shared/resources/
-COPY --chown=1001:0 ${project.artifactId}/WEB-INF/lib/snakeyaml-1.30.jar /opt/ol/wlp/usr/shared/resources/
+COPY --chown=1001:0 ${project.artifactId}/WEB-INF/lib/snakeyaml-1.32.jar /opt/ol/wlp/usr/shared/resources/
 
 # This script will add the requested XML snippets, grow image to be fit-for-purpose and apply interim fixes
 RUN configure.sh
