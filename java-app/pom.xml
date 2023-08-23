@@ -24,7 +24,7 @@
 		<param.db.name>${env.DB_NAME}</param.db.name>
 		<param.db.user>${env.DB_USER}</param.db.user>
 		<param.db.password>${env.DB_PASSWORD}</param.db.password>
-		<param.ingress.tls.secret>${env.INGRESS_TLS_SECRET}</param.ingress.tls.secret>
+		<param.namespace>${env.NAMESPACE}</param.namespace>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven-war-plugin.version>3.3.1</maven-war-plugin.version>
