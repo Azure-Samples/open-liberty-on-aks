@@ -2,9 +2,10 @@ apiVersion: apps.openliberty.io/v1beta2
 kind: OpenLibertyApplication
 metadata:
   name: javaee-cafe-cluster
+  namespace: ${param.namespace}
 spec:
   replicas: 3
-  applicationImage: ${param.login.server}/javaee-cafe:v1
+  applicationImage: ${param.login.server}/javaee-cafe:${param.namespace}-v1
   pullPolicy: Always
   service:
     type: LoadBalancer
