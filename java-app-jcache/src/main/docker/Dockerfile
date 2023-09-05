@@ -1,10 +1,16 @@
 # DisableDockerDetector "liberty-maven-plugin does not support docker buildx-build. See https://github.com/OpenLiberty/ci.maven/issues/1589"
 # Open Liberty base image
-FROM openliberty/open-liberty:kernel-java8-openj9-ubi
+FROM icr.io/appcafe/open-liberty:kernel-slim-java17-openj9-ubi
 
-# Add config and app
+# Add config files
 COPY --chown=1001:0 liberty/wlp/usr/servers/defaultServer/server.xml /config/server.xml
 COPY --chown=1001:0 liberty/wlp/usr/servers/defaultServer/bootstrap.properties /config/bootstrap.properties
+
+# This script will add the requested XML snippets to enable Liberty features and grow image to be fit-for-purpose using featureUtility.
+# Only available in 'kernel-slim'. The 'full' tag already includes all features for convenience.
+RUN features.sh
+
+# Add app and other dependencies
 COPY --chown=1001:0 ${project.artifactId}.war /config/apps/
 COPY --chown=1001:0 ${project.artifactId}/WEB-INF/lib/redisson-3.17.6.jar /opt/ol/wlp/usr/shared/resources/
 COPY --chown=1001:0 ${project.artifactId}/WEB-INF/lib/byte-buddy-1.12.10.jar /opt/ol/wlp/usr/shared/resources/
