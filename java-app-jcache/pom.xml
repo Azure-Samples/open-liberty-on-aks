@@ -24,7 +24,7 @@
     <liberty.bootstrap.artifactId>${project.artifactId}</liberty.bootstrap.artifactId>
     <registry.login.server>${env.LOGIN_SERVER}</registry.login.server>
     <singleServerConfig.password>${env.REDISCACHEKEY}</singleServerConfig.password>
-    <singleServerConfig.address>rediss://${env.REDISCACHEHOSTNAME}:6380</singleServerConfig.address>
+    <singleServerConfig.address>redis://${env.REDISCACHEHOSTNAME}:6380</singleServerConfig.address>
   </properties>
 
   <dependencies>
