@@ -24,6 +24,7 @@
     <liberty.bootstrap.artifactId>${project.artifactId}</liberty.bootstrap.artifactId>
     <registry.login.server>${env.LOGIN_SERVER}</registry.login.server>
     <singleServerConfig.password>${env.REDISCACHEKEY}</singleServerConfig.password>
+    <!--     rediss - defines to use SSL for Redis connection-->
     <singleServerConfig.address>rediss://${env.REDISCACHEHOSTNAME}:6380</singleServerConfig.address>
   </properties>
 
