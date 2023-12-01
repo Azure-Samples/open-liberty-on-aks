@@ -25,3 +25,4 @@ Below table shows the list of samples available in this repository.
 | Sample                           | Description                                | Guide                            |
 |----------------------------------|--------------------------------------------|----------------------------------|
 | [`java-app`](java-app) | Deploy a simple Java application with Open Liberty/WebSphere Liberty on an AKS cluster. | [howto-guide](https://docs.microsoft.com/azure/aks/howto-deploy-java-liberty-app) |
+| [`java-app-jcache`](java-app-jcache) | Use Java EE JCache with Open Liberty or WebSphere Liberty on an Azure Kubernetes Service (AKS) cluster. | [howto-guide](https://learn.microsoft.com/azure/developer/java/ee/how-to-deploy-java-liberty-jcache) |
