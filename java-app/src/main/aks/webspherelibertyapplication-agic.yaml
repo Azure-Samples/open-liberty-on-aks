@@ -1,11 +1,17 @@
-apiVersion: apps.openliberty.io/v1
-kind: OpenLibertyApplication
+apiVersion: liberty.websphere.ibm.com/v1
+kind: WebSphereLibertyApplication
 metadata:
   name: javaee-cafe-cluster-agic
 spec:
+  license:
+    accept: true
+    edition: IBM WebSphere Application Server
+    metric: Processor Value Unit (PVU)
+    productEntitlementSource: Standalone
   replicas: 3
   applicationImage: ${param.login.server}/javaee-cafe:v1
   pullPolicy: Always
+  manageTLS: false
   service:
     type: ClusterIP
     targetPort: 9080
