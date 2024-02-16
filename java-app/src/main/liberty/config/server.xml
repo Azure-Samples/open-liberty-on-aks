@@ -12,7 +12,7 @@
 
     <!-- Define http & https endpoints -->
     <httpEndpoint id="defaultHttpEndpoint" host="*"
-        httpPort="9080" httpsPort="9443" />
+                  httpPort="9080" httpsPort="9443" />
     <tcpOptions soReuseAddr="true" />
 
     <!-- Automatically expand WAR files and EAR files -->
@@ -20,7 +20,7 @@
 
     <!-- Define web application with its context root and location -->
     <webApplication id="javaee-cafe" contextRoot="/"
-        location="${server.config.dir}/apps/javaee-cafe.war">
+                    location="${server.config.dir}/apps/javaee-cafe.war">
     </webApplication>
 
     <dataSource id="JavaEECafeDB" jndiName="jdbc/JavaEECafeDB">
