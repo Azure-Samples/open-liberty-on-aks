@@ -3,11 +3,11 @@
     <!-- Enable features -->
     <featureManager>
         <feature>cdi-4.0</feature>
-        <feature>jaxb-4.0</feature>
+        <feature>xmlBinding-4.0</feature>
         <feature>faces-4.0</feature>
-        <feature>restfulWS-3.0</feature>
+        <feature>restfulWS-3.1</feature>
         <feature>enterpriseBeansLite-4.0</feature>
-        <feature>persistence-3.0</feature>
+        <feature>persistence-3.1</feature>
     </featureManager>
 
     <!-- Define http & https endpoints -->
