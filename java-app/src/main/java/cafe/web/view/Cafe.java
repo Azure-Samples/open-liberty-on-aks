@@ -65,6 +65,9 @@ public class Cafe implements Serializable {
 				.getRequest();
 		baseUri = "http://localhost:9080" + request.getContextPath() + "/rest/coffees";
 		this.client = ClientBuilder.newBuilder().build();
+
+		name = (String) request.getSession().getAttribute("coffeeName");
+		price = (Double) request.getSession().getAttribute("coffeePrice");
 	}
 
 	private void getAllCoffees() {
@@ -76,8 +79,9 @@ public class Cafe implements Serializable {
 	public void addCoffee() throws IOException {
 		Coffee coffee = new Coffee(this.name, this.price);
 		this.client.target(baseUri).request(MediaType.APPLICATION_JSON).post(Entity.json(coffee));
-		this.name = null;
-		this.price = null;
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		request.getSession().setAttribute("coffeeName", this.name);
+		request.getSession().setAttribute("coffeePrice", this.price);
 		FacesContext.getCurrentInstance().getExternalContext().redirect("");
 	}
 

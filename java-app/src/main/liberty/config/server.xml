@@ -9,6 +9,7 @@
         <feature>restfulWS-3.1</feature>
         <feature>enterpriseBeansLite-4.0</feature>
         <feature>persistence-3.1</feature>
+        <feature>sessionDatabase-1.0</feature>
     </featureManager>
 
     <!-- Define http & https endpoints -->
@@ -23,6 +24,9 @@
     <webApplication id="javaee-cafe" contextRoot="/"
                     location="${server.config.dir}/apps/javaee-cafe.war">
     </webApplication>
+
+    <httpSessionDatabase id="SessionDB" dataSourceRef="JavaEECafeDB" />
+    <httpSession storageRef="SessionDB" />
 
     <dataSource id="JavaEECafeDB" jndiName="jdbc/JavaEECafeDB">
         <jdbcDriver libraryRef="driver-library" />
