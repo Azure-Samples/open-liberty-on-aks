@@ -7,26 +7,26 @@
     <version>1.0.3-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>${project.artifactId}</name>
-    <description>This is the basic Java EE application used in the demo.
-    It is a simple CRUD application. It uses Maven and Java EE 10 (Jakarta RESTful Web Services, Jakarta Enterprise Beans, Jakarta CDI, Jakarta JSON-B, Jakarta Faces, Jakarta Validation).
+    <description>This is the basic Jakarta EE application used in the demo.
+    It is a simple CRUD application. It uses Maven and Jakarta EE 10 (Jakarta RESTful Web Services, Jakarta Enterprise Beans, Jakarta CDI, Jakarta JSON-B, Jakarta Faces, Jakarta Validation).
     </description>
 
     <properties>
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <jakartaee.api.version>10.0.0</jakartaee.api.version>
+        <maven-war-plugin.version>3.3.1</maven-war-plugin.version>
         <maven.compiler.release>17</maven.compiler.release>
-        <param.login.server>${env.LOGIN_SERVER}</param.login.server>
-        <param.registry.name>${env.REGISTRY_NAME}</param.registry.name>
-        <param.password>${env.PASSWORD}</param.password>
-        <param.user.name>${env.USER_NAME}</param.user.name>
-        <param.db.server.name>${env.DB_SERVER_NAME}</param.db.server.name>
         <param.db.name>${env.DB_NAME}</param.db.name>
-        <param.db.user>${env.DB_USER}</param.db.user>
         <param.db.password>${env.DB_PASSWORD}</param.db.password>
+        <param.db.server.name>${env.DB_SERVER_NAME}</param.db.server.name>
+        <param.db.user>${env.DB_USER}</param.db.user>
         <param.ingress.tls.secret>${env.INGRESS_TLS_SECRET}</param.ingress.tls.secret>
+        <param.login.server>${env.LOGIN_SERVER}</param.login.server>
+        <param.password>${env.PASSWORD}</param.password>
+        <param.registry.name>${env.REGISTRY_NAME}</param.registry.name>
+        <param.user.name>${env.USER_NAME}</param.user.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven-war-plugin.version>3.3.1</maven-war-plugin.version>
     </properties>
 
     <dependencies>
