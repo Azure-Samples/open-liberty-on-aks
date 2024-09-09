@@ -7,8 +7,8 @@
     <version>1.0.0</version>
     <packaging>war</packaging>
     <name>${project.artifactId}</name>
-    <description>This is the basic Java EE application used in the demo.
-    It is a simple CRUD application. It uses Maven and Java EE 10 (Jakarta RESTful Web Services, Jakarta Enterprise Beans, Jakarta CDI, Jakarta JSON-B, Jakarta Faces, Jakarta Validation).
+    <description>This is the basic Jakarta EE application used in the demo.
+    It is a simple CRUD application. It uses Maven and Jakarta EE 10 (Jakarta RESTful Web Services, Jakarta Enterprise Beans, Jakarta CDI, Jakarta JSON-B, Jakarta Faces, Jakarta Validation).
     </description>
 
     <properties>
