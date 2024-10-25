@@ -22,9 +22,8 @@
         <param.db.user>${env.DB_USER}</param.db.user>
         <param.ingress.tls.secret>${env.INGRESS_TLS_SECRET}</param.ingress.tls.secret>
         <param.login.server>${env.LOGIN_SERVER}</param.login.server>
-        <param.password>${env.PASSWORD}</param.password>
-        <param.registry.name>${env.REGISTRY_NAME}</param.registry.name>
-        <param.user.name>${env.USER_NAME}</param.user.name>
+        <param.sc.service.account.name>${env.SC_SERVICE_ACCOUNT_NAME}</param.sc.service.account.name>
+        <param.sc.secret.name>${env.SC_SECRET_NAME}</param.sc.secret.name>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
