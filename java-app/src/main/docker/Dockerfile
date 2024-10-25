@@ -9,9 +9,9 @@ COPY --chown=1001:0 liberty/wlp/usr/servers/defaultServer/server.xml /config/ser
 # Only available in 'kernel-slim'. The 'full' tag already includes all features for convenience.
 RUN features.sh
 
-# Add app and jdbc driver
+# Add app and dependencies
 COPY --chown=1001:0 javaee-cafe.war /config/apps/
-COPY --chown=1001:0 liberty/wlp/usr/shared/resources/mssql-jdbc-8.2.2.jre8.jar /opt/ol/wlp/usr/shared/resources/
+COPY --chown=1001:0 liberty/wlp/usr/shared/resources /opt/ol/wlp/usr/shared/resources
 
 # This script will add the requested XML snippets, grow image to be fit-for-purpose and apply interim fixes
 RUN configure.sh
