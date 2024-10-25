@@ -30,12 +30,8 @@
 
     <dataSource id="JavaEECafeDB" jndiName="jdbc/JavaEECafeDB">
         <jdbcDriver libraryRef="driver-library" />
-        <properties.microsoft.sqlserver
-            serverName="${db.server.name}"
-            portNumber="1433"
-            databaseName="${db.name}"
-            user="${db.user}"
-            password="${db.password}" />
+        <properties
+            URL="${azure.sql.connectionstring}" />
     </dataSource>
 
     <library id="driver-library">
