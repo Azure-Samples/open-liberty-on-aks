@@ -20,9 +20,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <registry.login.server>${env.LOGIN_SERVER}</registry.login.server>
-        <!--     rediss - defines to use SSL for Redis connection-->
-        <singleServerConfig.address>rediss://${env.REDISCACHEHOSTNAME}:6380</singleServerConfig.address>
-        <singleServerConfig.password>${env.REDISCACHEKEY}</singleServerConfig.password>
+        <!-- redisson configuration -->
+        <singleServerConfig.address>rediss://${env.REDIS_CACHE_ENDPOINT}</singleServerConfig.address>
+        <singleServerConfig.password>${env.REDIS_CACHE_KEY}</singleServerConfig.password>
     </properties>
 
     <dependencies>
