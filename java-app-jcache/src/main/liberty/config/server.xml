@@ -7,7 +7,7 @@
         <feature>enterpriseBeansLite-4.0</feature>
         <feature>faces-4.0</feature>
         <feature>restfulWS-3.1</feature>
-        <feature>sessionCache-1.0</feature>        
+        <feature>sessionCache-1.0</feature>
         <feature>xmlBinding-4.0</feature>
     </featureManager>
 
@@ -32,5 +32,7 @@
     <applicationManager autoExpand="true" />
 
     <!-- Define web application with its context root and location -->
-    <webApplication location="${artifactId}.war" contextRoot="/" />
+    <webApplication id="javaee-cafe-jcache" contextRoot="/"
+                    location="${server.config.dir}/apps/javaee-cafe-jcache.war">
+    </webApplication>
 </server>

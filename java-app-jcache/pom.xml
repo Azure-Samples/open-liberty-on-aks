@@ -14,7 +14,6 @@
     <properties>
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <jakartaee.api.version>10.0.0</jakartaee.api.version>
-        <liberty.bootstrap.artifactId>${project.artifactId}</liberty.bootstrap.artifactId>
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -37,66 +36,6 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>4.0.0</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson</artifactId>
-            <version>3.23.4</version>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
-            <version>3.5.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.reactivestreams</groupId>
-            <artifactId>reactive-streams</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>io.reactivex.rxjava3</groupId>
-            <artifactId>rxjava</artifactId>
-            <version>3.1.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling-river</artifactId>
-            <version>2.0.11.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling</artifactId>
-            <version>2.0.11.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.36</version>
-        </dependency>
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy</artifactId>
-            <version>1.14.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jodd</groupId>
-            <artifactId>jodd-bean</artifactId>
-            <version>5.1.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jodd</groupId>
-            <artifactId>jodd-core</artifactId>
-            <version>5.1.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.36</version>
         </dependency>
     </dependencies>
 
@@ -136,44 +75,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>        
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <id>01-dockerfile</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/docker</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>02-aks-config</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/aks</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
             <!-- Enable liberty-maven-plugin -->
@@ -193,57 +94,6 @@
                         <configuration>
                             <libertyRuntimeVersion>[23.0.0.8,)</libertyRuntimeVersion>
                             <outputDirectory>${project.build.directory}/wlp-package</outputDirectory>
-                            <copyDependencies>
-                                <dependency>
-                                    <groupId>org.redisson</groupId>
-                                    <artifactId>redisson</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>io.projectreactor</groupId>
-                                    <artifactId>reactor-core</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.reactivestreams</groupId>
-                                    <artifactId>reactive-streams</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>io.reactivex.rxjava3</groupId>
-                                    <artifactId>rxjava</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.jboss.marshalling</groupId>
-                                    <artifactId>jboss-marshalling-river</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.jboss.marshalling</groupId>
-                                    <artifactId>jboss-marshalling</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.slf4j</groupId>
-                                    <artifactId>slf4j-api</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.yaml</groupId>
-                                    <artifactId>snakeyaml</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>net.bytebuddy</groupId>
-                                    <artifactId>byte-buddy</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.jodd</groupId>
-                                    <artifactId>jodd-bean</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.jodd</groupId>
-                                    <artifactId>jodd-core</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.slf4j</groupId>
-                                    <artifactId>slf4j-simple</artifactId>
-                                </dependency>
-                                <location>${project.build.directory}/liberty/wlp/usr/shared/resources</location>
-                            </copyDependencies>
                         </configuration>
                     </execution>
                 </executions>
@@ -257,54 +107,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>config</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <executions>
-                            <execution>
-                                <id>01-dockerfile</id>
-                                <phase>validate</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${basedir}/target</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>src/main/docker</directory>
-                                            <filtering>true</filtering>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>02-aks-config</id>
-                                <phase>validate</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${basedir}/target</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>src/main/aks</directory>
-                                            <filtering>true</filtering>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>redisson</id>
             <build>
