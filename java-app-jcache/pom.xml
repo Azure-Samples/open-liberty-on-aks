@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- redisson configuration -->
-        <singleServerConfig.address>rediss://${env.REDIS_CACHE_ENDPOINT}</singleServerConfig.address>
+        <singleServerConfig.address>${env.REDIS_CACHE_ADDRESS}</singleServerConfig.address>
         <singleServerConfig.password>${env.REDIS_CACHE_KEY}</singleServerConfig.password>
     </properties>
 
@@ -28,12 +28,6 @@
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
             <version>${jakartaee.api.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
