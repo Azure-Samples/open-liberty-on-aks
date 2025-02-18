@@ -3,7 +3,7 @@ package cafe.web.view;
 import cafe.model.entity.Coffee;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Named
-@SessionScoped
+@RequestScoped
 public class Cafe implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -74,8 +74,6 @@ public class Cafe implements Serializable {
 
         // Manually get the coffee name and price from the session
         if (request.getSession().getAttribute("coffeeName") != null) {
-            logger.log(Level.INFO, "coffee name from session-scoped bean: " + name);
-            logger.log(Level.INFO, "coffee price from session-scoped bean: " + price);
             name = (String) request.getSession().getAttribute("coffeeName");
             price = Double.valueOf((String) request.getSession().getAttribute("coffeePrice"));
             logger.log(Level.INFO, "coffee name from session: " + name);
@@ -103,11 +101,5 @@ public class Cafe implements Serializable {
     public void removeCoffee(String coffeeId) throws IOException {
         this.client.target(baseUri).path(coffeeId).request().delete();
         FacesContext.getCurrentInstance().getExternalContext().redirect("");
-    }
-
-    // This method is called after deserialization to initialize transient fields.
-    private Object readResolve() {
-        init();
-        return this;
     }
 }
