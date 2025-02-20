@@ -57,7 +57,6 @@ public class Cafe implements Serializable {
     }
 
     public List<Coffee> getCoffeeList() {
-        this.getAllCoffees();
         return coffeeList;
     }
 
@@ -70,23 +69,26 @@ public class Cafe implements Serializable {
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
                 .getRequest();
         baseUri = "http://localhost:9080" + request.getContextPath() + "/rest/coffees";
-        this.client = ClientBuilder.newBuilder().build();
+        client = ClientBuilder.newBuilder().build();
+        getAllCoffees();
     }
 
     private void getAllCoffees() {
-        this.coffeeList = this.client.target(this.baseUri).path("/").request(MediaType.APPLICATION_JSON)
+        coffeeList = client.target(baseUri).path("/").request(MediaType.APPLICATION_JSON)
                 .get(new GenericType<List<Coffee>>() {
                 });
     }
 
     public void addCoffee() throws IOException {
-        Coffee coffee = new Coffee(this.name, this.price);
-        this.client.target(baseUri).request(MediaType.APPLICATION_JSON).post(Entity.json(coffee));
+        Coffee coffee = new Coffee(name, price);
+        client.target(baseUri).request(MediaType.APPLICATION_JSON).post(Entity.json(coffee));
+        getAllCoffees();
         FacesContext.getCurrentInstance().getExternalContext().redirect("");
     }
 
     public void removeCoffee(String coffeeId) throws IOException {
-        this.client.target(baseUri).path(coffeeId).request().delete();
+        client.target(baseUri).path(coffeeId).request().delete();
+        getAllCoffees();
         FacesContext.getCurrentInstance().getExternalContext().redirect("");
     }
 
