@@ -24,8 +24,8 @@
     <!-- trust JDK’s default truststore -->
     <ssl id="defaultSSLConfig"  trustDefaultCerts="true" />
 
-    <!-- This yaml file could also be mounted and exposed via a ConfigMap or Kubernetes Secret -->
-    <httpSessionCache libraryRef="jCacheVendorLib"
+    <!-- https://openliberty.io/docs/latest/reference/config/httpSessionCache.html -->
+    <httpSessionCache libraryRef="jCacheVendorLib" writeContents="GET_AND_SET_ATTRIBUTES"
                       uri="file:${server.config.dir}/redisson-config.yaml" />
 
     <!-- Automatically expand WAR files and EAR files -->
