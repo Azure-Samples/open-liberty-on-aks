@@ -33,8 +33,19 @@ public class CafeRepository {
 	@PostConstruct
 	private void init() {
 		Config redissonconfig = new Config();
-		redissonconfig.useSingleServer().setPassword(System.getenv("REDIS_CACHE_KEY"))
-			.setAddress(System.getenv("REDIS_CACHE_ADDRESS"));
+		String redisCacheAddress = System.getenv("REDIS_CACHE_ADDRESS");
+		if (redisCacheAddress == null || redisCacheAddress.isEmpty()) {
+			logger.log(Level.WARNING, "REDIS_CACHE_ADDRESS environment variable is not set or empty.");
+			throw new IllegalStateException("REDIS_CACHE_ADDRESS environment variable is required.");
+		}
+
+		String redisCacheKey = System.getenv("REDIS_CACHE_KEY");
+		if (redisCacheKey == null || redisCacheKey.isEmpty()) {
+			logger.log(Level.INFO, "REDIS_CACHE_KEY is not set or empty. Connecting to Redis without password.");
+			redissonconfig.useSingleServer().setAddress(redisCacheAddress);
+		} else {
+			redissonconfig.useSingleServer().setAddress(redisCacheAddress).setPassword(redisCacheKey);
+		}
 
 		RedissonClient redissonClient = Redisson.create(redissonconfig);
 		CacheManager manager = Caching.getCachingProvider().getCacheManager();
