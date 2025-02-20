@@ -3,7 +3,7 @@ package cafe.web.view;
 import cafe.model.entity.Coffee;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Named
-@RequestScoped
+@SessionScoped
 public class Cafe implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -71,14 +71,6 @@ public class Cafe implements Serializable {
                 .getRequest();
         baseUri = "http://localhost:9080" + request.getContextPath() + "/rest/coffees";
         this.client = ClientBuilder.newBuilder().build();
-
-        // Manually get the coffee name and price from the session
-        if (request.getSession().getAttribute("coffeeName") != null) {
-            name = (String) request.getSession().getAttribute("coffeeName");
-            price = Double.valueOf((String) request.getSession().getAttribute("coffeePrice"));
-            logger.log(Level.INFO, "coffee name from session: " + name);
-            logger.log(Level.INFO, "coffee price from session: " + price);
-        }
     }
 
     private void getAllCoffees() {
@@ -88,11 +80,6 @@ public class Cafe implements Serializable {
     }
 
     public void addCoffee() throws IOException {
-        // Manually set the coffee name and price in the session
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        request.getSession().setAttribute("coffeeName", this.name);
-        request.getSession().setAttribute("coffeePrice", this.price.toString());
-
         Coffee coffee = new Coffee(this.name, this.price);
         this.client.target(baseUri).request(MediaType.APPLICATION_JSON).post(Entity.json(coffee));
         FacesContext.getCurrentInstance().getExternalContext().redirect("");
@@ -101,5 +88,11 @@ public class Cafe implements Serializable {
     public void removeCoffee(String coffeeId) throws IOException {
         this.client.target(baseUri).path(coffeeId).request().delete();
         FacesContext.getCurrentInstance().getExternalContext().redirect("");
+    }
+
+    // This method is called after deserialization to initialize transient fields.
+    private Object readResolve() {
+        init();
+        return this;
     }
 }
