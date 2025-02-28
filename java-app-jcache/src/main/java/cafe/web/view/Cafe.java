@@ -19,26 +19,21 @@ import java.lang.invoke.MethodHandles;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Named
 @SessionScoped
 public class Cafe implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(MethodHandles.lookup().lookupClass().getName());
 
     private transient String baseUri;
     private transient Client client;
 
     @NotNull
     @NotEmpty
-    protected String name;
+    private String name;
     @NotNull
-    protected Double price;
-
-    protected transient List<Coffee> coffeeList;
+    private Double price;
 
     public String getName() {
         return name;
@@ -56,25 +51,16 @@ public class Cafe implements Serializable {
         this.price = price;
     }
 
-    public List<Coffee> getCoffeeList() {
-        return coffeeList;
-    }
-
-    public String getHostName() {
-        return System.getenv("HOSTNAME");
-    }
-
     @PostConstruct
     private void init() {
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
                 .getRequest();
         baseUri = "http://localhost:9080" + request.getContextPath() + "/rest/coffees";
         client = ClientBuilder.newBuilder().build();
-        getAllCoffees();
     }
 
-    private void getAllCoffees() {
-        coffeeList = client.target(baseUri).path("/").request(MediaType.APPLICATION_JSON)
+    public List<Coffee> getCoffeeList() {
+        return client.target(baseUri).path("/").request(MediaType.APPLICATION_JSON)
                 .get(new GenericType<List<Coffee>>() {
                 });
     }
@@ -82,13 +68,11 @@ public class Cafe implements Serializable {
     public void addCoffee() throws IOException {
         Coffee coffee = new Coffee(name, price);
         client.target(baseUri).request(MediaType.APPLICATION_JSON).post(Entity.json(coffee));
-        getAllCoffees();
         FacesContext.getCurrentInstance().getExternalContext().redirect("");
     }
 
     public void removeCoffee(String coffeeId) throws IOException {
         client.target(baseUri).path(coffeeId).request().delete();
-        getAllCoffees();
         FacesContext.getCurrentInstance().getExternalContext().redirect("");
     }
 
